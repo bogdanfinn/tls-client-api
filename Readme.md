@@ -17,6 +17,10 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 
 Please open an issue on [this](https://github.com/bogdanfinn/tls-client) github repository. In the best case you provide the response of https://tls.peet.ws/api/all requested by the client you want to be implemented.
 
+### Build API
+Make sure to also checkout this repository `https://github.com/Solem8s/gosoline` on the branch `tls-client-api` next to this project.
+Afterwards you can just run the following script: `cmd/tls-client-api/build.sh` or use the prebuilt binaries in `dist`
+
 ### Configuration & Start
 * Configure stuff like api port and authentication keys in the `cmd/tls-client-api/config.dist.yml` file.
 * The endpoint is `http://127.0.0.1:8080/api/forward`
