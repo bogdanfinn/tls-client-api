@@ -11,15 +11,6 @@ import (
 	"github.com/justtrackio/gosoline/pkg/mdl"
 )
 
-var supportedTlsClients = map[string]tls_client.ClientProfile{
-	"chrome_103":      tls_client.Chrome_103,
-	"safari_15_5":     tls_client.Safari_15_5,
-	"safari_15_3":     tls_client.Safari_15_3,
-	"safari_ios_15_5": tls_client.Safari_IOS_15_5,
-	"firefox_102":     tls_client.Firefox_102,
-	"opera_89":        tls_client.Opera_89,
-}
-
 type TLSClientWrapper interface {
 	Do(tlsClientIdentifier string, proxy *string, cookies []*http.Cookie, req *http.Request) (*http.Response, []*http.Cookie, error)
 }
@@ -53,7 +44,7 @@ func (w *tlsClientWrapper) Do(tlsClientIdentifier string, proxy *string, cookies
 	if err != nil {
 		return nil, nil, fmt.Errorf("could not create tls http client: %w", err)
 	}
-	
+
 	if len(cookies) > 0 {
 		tlsClient.SetCookies(req.URL, cookies)
 	}
@@ -70,7 +61,7 @@ func (w *tlsClientWrapper) Do(tlsClientIdentifier string, proxy *string, cookies
 }
 
 func (w *tlsClientWrapper) getTlsClientProfile(tlsClientIdentifier string) tls_client.ClientProfile {
-	tlsClientProfile, ok := supportedTlsClients[tlsClientIdentifier]
+	tlsClientProfile, ok := tls_client.MappedTLSClients[tlsClientIdentifier]
 
 	if !ok {
 		w.logger.Info("can not find supported tls client for %s - use default client", tlsClientIdentifier)
