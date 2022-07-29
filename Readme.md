@@ -30,25 +30,33 @@ Afterwards you can just run the following script: `cmd/tls-client-api/build.sh` 
 You need to do a POST Request against this running API Service with the following JSON Request Body:
 ```json
 {
-    "tlsClientIdentifier": "chrome_103", // default chrome_103 when key omitted
-    "proxyUrl": "", // use null for no proxy or omitt this key
-    "headerOrder": [
-        "key1",
-        "key2"
-    ],
-    "headers": {
-        "key1": "value1",
-        "key2": "value2"
-    },
-    "requestCookies": {
-        "key1": "value1",
-        "key2": "value2"
-    },
-    "requestUrl": "https://tls.peet.ws/api/all",
-    "requestBody": "", // use null for no request body or omitt this key
-    "requestMethod": "GET"
+  "tlsClientIdentifier": "chrome_103",
+  "proxyUrl": "",
+  "headerOrder": [
+    "key1",
+    "key2"
+  ],
+  "headers": {
+    "key1": "value1",
+    "key2": "value2"
+  },
+  "requestCookies": [
+    {
+      "name": "cookieName",
+      "value": "cookieValue",
+      "path": "cookiePath",
+      "domain": "cookieDomain",
+      "expires": "cookieExpires"
+    }
+  ],
+  "requestUrl": "https://tls.peet.ws/api/all",
+  "requestBody": "",
+  "requestMethod": "GET"
 }
 ```
+* If `tlsClientIdentifier` is not specified chrome_103 will be used
+* If you do not want to set `requestBody` or `proxyUrl` use `null` instead of empty string
+* Header order might be random when no order is specified
 
 #### JavaScript Fetch
 ```js

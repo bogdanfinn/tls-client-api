@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	"time"
 
 	http "github.com/bogdanfinn/fhttp"
 	tls_client_wrapper "github.com/bogdanfinn/tls-client-api/internal/tls-client-api/tls-client-wrapper"
@@ -28,7 +29,15 @@ type ForwardedRequestHandlerRequest struct {
 	RequestUrl          string            `json:"requestUrl"`
 	RequestMethod       string            `json:"requestMethod"`
 	RequestBody         *string           `json:"requestBody"`
-	RequestCookies      map[string]string `json:"requestCookies"` // TODO: implement
+	RequestCookies      []CookieInput     `json:"requestCookies"`
+}
+
+type CookieInput struct {
+	Name    string    `json:"name"`
+	Value   string    `json:"value"`
+	Path    string    `json:"path"`
+	Domain  string    `json:"domain"`
+	Expires time.Time `json:"expires"`
 }
 
 type ForwardedRequestHandlerResponse struct {
@@ -65,10 +74,41 @@ func (fh ForwardedRequestHandler) Handle(ctx context.Context, request *apiserver
 		return nil, fmt.Errorf("bad request body provided")
 	}
 
+	tlsReq, err := fh.buildRequest(input)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request object: %w", err)
+	}
+
+	tlsResp, sessionCookies, err := fh.tlsClientWrapper.Do(input.TLSClientIdentifier, input.ProxyUrl, BuildCookies(input.RequestCookies), tlsReq)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to do tls-client request: %w", err)
+	}
+
+	defer tlsResp.Body.Close()
+
+	respBodyBytes, err := ioutil.ReadAll(tlsResp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %w", err)
+	}
+
+	resp := ForwardedRequestHandlerResponse{
+		StatusCode:      tlsResp.StatusCode,
+		ResponseBody:    string(respBodyBytes),
+		ResponseHeaders: tlsResp.Header,
+		ResponseCookies: CookiesToMap(tlsResp.Cookies()),
+		SessionCookies:  CookiesToMap(sessionCookies),
+	}
+
+	return apiserver.NewJsonResponse(resp), nil
+}
+
+func (fh ForwardedRequestHandler) buildRequest(input *ForwardedRequestHandlerRequest) (*http.Request, error) {
 	var tlsReq *http.Request
 	var err error
 
-	if input.RequestBody != nil {
+	if input.RequestBody != nil && mdl.EmptyIfNil(input.RequestBody) != "" {
 		requestBody := bytes.NewBuffer([]byte(mdl.EmptyIfNil(input.RequestBody)))
 		tlsReq, err = http.NewRequest(input.RequestMethod, input.RequestUrl, requestBody)
 	} else {
@@ -93,36 +133,5 @@ func (fh ForwardedRequestHandler) Handle(ctx context.Context, request *apiserver
 
 	tlsReq.Header = headers
 
-	tlsResp, sessionCookies, err := fh.tlsClientWrapper.Do(input.TLSClientIdentifier, input.ProxyUrl, tlsReq)
-
-	if err != nil {
-		return nil, fmt.Errorf("failed to do tls-client request: %w", err)
-	}
-
-	defer tlsResp.Body.Close()
-
-	respBodyBytes, err := ioutil.ReadAll(tlsResp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w", err)
-	}
-
-	resp := ForwardedRequestHandlerResponse{
-		StatusCode:      tlsResp.StatusCode,
-		ResponseBody:    string(respBodyBytes),
-		ResponseHeaders: tlsResp.Header,
-		ResponseCookies: CookiesToMap(tlsResp.Cookies()),
-		SessionCookies:  CookiesToMap(sessionCookies),
-	}
-
-	return apiserver.NewJsonResponse(resp), nil
-}
-
-func CookiesToMap(cookies []*http.Cookie) map[string]string {
-	ret := make(map[string]string, 0)
-
-	for _, c := range cookies {
-		ret[c.Name] = c.String()
-	}
-
-	return ret
+	return tlsReq, nil
 }

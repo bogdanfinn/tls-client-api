@@ -15,6 +15,7 @@ func main() {
 
 	application.Run(
 		application.WithConfigFile(configFilePath, "yml"),
+		application.WithConfigFileFlag,
 		application.WithModuleFactory("tls-client-api", apiserver.New(api.DefineRouter)),
 	)
 }

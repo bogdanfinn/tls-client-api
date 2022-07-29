@@ -21,7 +21,7 @@ var supportedTlsClients = map[string]tls_client.ClientProfile{
 }
 
 type TLSClientWrapper interface {
-	Do(tlsClientIdentifier string, proxy *string, req *http.Request) (*http.Response, []*http.Cookie, error)
+	Do(tlsClientIdentifier string, proxy *string, cookies []*http.Cookie, req *http.Request) (*http.Response, []*http.Cookie, error)
 }
 
 type tlsClientWrapper struct {
@@ -36,7 +36,7 @@ func NewTLSClientWrapper(ctx context.Context, config cfg.Config, logger log.Logg
 	}, nil
 }
 
-func (w *tlsClientWrapper) Do(tlsClientIdentifier string, proxy *string, req *http.Request) (*http.Response, []*http.Cookie, error) {
+func (w *tlsClientWrapper) Do(tlsClientIdentifier string, proxy *string, cookies []*http.Cookie, req *http.Request) (*http.Response, []*http.Cookie, error) {
 	tlsClientProfile := w.getTlsClientProfile(tlsClientIdentifier)
 
 	options := []tls_client.HttpClientOption{
@@ -44,7 +44,7 @@ func (w *tlsClientWrapper) Do(tlsClientIdentifier string, proxy *string, req *ht
 		tls_client.WithClientProfile(tlsClientProfile),
 	}
 
-	if proxy != nil {
+	if proxy != nil && mdl.EmptyIfNil(proxy) != "" {
 		options = append(options, tls_client.WithProxyUrl(mdl.EmptyIfNil(proxy)))
 	}
 
@@ -52,6 +52,10 @@ func (w *tlsClientWrapper) Do(tlsClientIdentifier string, proxy *string, req *ht
 
 	if err != nil {
 		return nil, nil, fmt.Errorf("could not create tls http client: %w", err)
+	}
+	
+	if len(cookies) > 0 {
+		tlsClient.SetCookies(req.URL, cookies)
 	}
 
 	resp, err := tlsClient.Do(req)
