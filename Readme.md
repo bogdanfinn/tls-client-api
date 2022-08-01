@@ -17,14 +17,22 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 
 Please open an issue on [this](https://github.com/bogdanfinn/tls-client) github repository. In the best case you provide the response of https://tls.peet.ws/api/all requested by the client you want to be implemented.
 
-### Build API
-Make sure to also checkout this repository `https://github.com/Solem8s/gosoline` on the branch `tls-client-api` next to this project.
-Afterwards you can just run the following script: `cmd/tls-client-api/build.sh` or use the prebuilt binaries in `dist`
+### Use API
+You can just run the prebuilt binaries in `dist`. There is a binary for linux, macos and windows. Just modify your config file next to the binary as explained below and start the application.
+
+### Build API from source
+When you want to build the application from source, make sure to also checkout this repository `https://github.com/Solem8s/gosoline` on the branch `tls-client-api` next to this project.
+Afterwards you can just run the following script: `cmd/tls-client-api/build.sh SOME_BUILD_IDENTIFIER` and it should build the binaries for you
 
 ### Configuration & Start
 * Configure stuff like api port and authentication keys in the `cmd/tls-client-api/config.dist.yml` file.
 * The endpoint is `http://127.0.0.1:8080/api/forward`
-* You need to set a `x-api-key` header with an auth key from the config file.
+* You need to set a `x-api-key` header with an auth key from the config file. This is for protecting the API when you host it on some server. Requests without the correct keys in the header will be rejected.
+
+### Attention
+* Applications powered with [gosoline](https://github.com/justtrackio/gosoline) automatically host a health check endpoint which is by default on port `8090` under the path `/health`. So in our case it would be `http://127.0.0.1:8090/health`.
+* Applications powered with [gosoline](https://github.com/justtrackio/gosoline) automatically host a metadata server for your application to provide insights into your application. The metadata server is hosted on port `8070` and has three endpoints. `/`, `/config`, `/memory` this should help you debugging your application. 
+**Do not make this endpoints public available when you host the Application on some server in the internet. You would make your config file public available.**
 
 ### How to use this api when it is running
 You need to do a POST Request against this running API Service with the following JSON Request Body:
