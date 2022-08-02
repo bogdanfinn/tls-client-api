@@ -124,6 +124,9 @@ curl --location --request POST '127.0.0.1:8080/api/forward' \
 }'
 ```
 
+### Frequently Asked Questions / Errors
+Please refer to https://github.com/bogdanfinn/tls-client#frequently-asked-questions--errors
+
 ### Questions?
 
 Contact me on discord
