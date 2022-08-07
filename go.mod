@@ -3,8 +3,8 @@ module github.com/bogdanfinn/tls-client-api
 go 1.18
 
 require (
-	github.com/bogdanfinn/fhttp v0.1.1
-	github.com/bogdanfinn/tls-client v0.1.2
+	github.com/bogdanfinn/fhttp v0.2.0
+	github.com/bogdanfinn/tls-client v0.2.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/justtrackio/gosoline v0.3.99
 )
@@ -43,7 +43,7 @@ require (
 	github.com/aws/aws-xray-sdk-go v1.7.0 // indirect
 	github.com/aws/smithy-go v1.11.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bogdanfinn/utls v0.1.0 // indirect
+	github.com/bogdanfinn/utls v0.2.0 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect

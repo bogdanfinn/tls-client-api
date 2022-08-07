@@ -6,6 +6,7 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 
 ### Supported Clients
 
+- chrome_104
 - chrome_103
 - safari_15_3
 - safari_15_5
@@ -38,7 +39,7 @@ Afterwards you can just run the following script: `cmd/tls-client-api/build.sh S
 You need to do a POST Request against this running API Service with the following JSON Request Body:
 ```json
 {
-  "tlsClientIdentifier": "chrome_103",
+  "tlsClientIdentifier": "chrome_104",
   "proxyUrl": "",
   "headerOrder": [
     "key1",
@@ -62,7 +63,7 @@ You need to do a POST Request against this running API Service with the followin
   "requestMethod": "GET"
 }
 ```
-* If `tlsClientIdentifier` is not specified chrome_103 will be used
+* If `tlsClientIdentifier` is not specified chrome_104 will be used
 * If you do not want to set `requestBody` or `proxyUrl` use `null` instead of empty string
 * Header order might be random when no order is specified
 
@@ -73,7 +74,7 @@ myHeaders.append("x-api-key", "my-auth-key-1");
 myHeaders.append("Content-Type", "application/json");
 
 var raw = JSON.stringify({
-  "tlsClientIdentifier": "chrome_103",
+  "tlsClientIdentifier": "chrome_104",
   "requestUrl": "https://tls.peet.ws/api/all",
   "requestMethod": "GET"
 });
@@ -99,7 +100,7 @@ import json
 url = "127.0.0.1:8080/api/forward"
 
 payload = json.dumps({
-  "tlsClientIdentifier": "chrome_103",
+  "tlsClientIdentifier": "chrome_104",
   "requestUrl": "https://tls.peet.ws/api/all",
   "requestMethod": "GET"
 })
@@ -118,7 +119,7 @@ curl --location --request POST '127.0.0.1:8080/api/forward' \
 --header 'x-api-key: my-auth-key-1' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "tlsClientIdentifier": "chrome_103",
+    "tlsClientIdentifier": "chrome_104",
     "requestUrl": "https://tls.peet.ws/api/all",
     "requestMethod": "GET"
 }'
