@@ -22,6 +22,7 @@ type ForwardedRequestHandler struct {
 }
 
 type ForwardedRequestHandlerRequest struct {
+	SessionId           *string           `json:"sessionId"`
 	TLSClientIdentifier string            `json:"tlsClientIdentifier"`
 	ProxyUrl            *string           `json:"proxyUrl"`
 	Headers             map[string]string `json:"headers"`
@@ -41,6 +42,7 @@ type CookieInput struct {
 }
 
 type ForwardedRequestHandlerResponse struct {
+	SessionId       string              `json:"sessionId"`
 	StatusCode      int                 `json:"statusCode"`
 	ResponseBody    string              `json:"responseBody"`
 	ResponseHeaders map[string][]string `json:"responseHeaders"`
@@ -80,7 +82,7 @@ func (fh ForwardedRequestHandler) Handle(ctx context.Context, request *apiserver
 		return nil, fmt.Errorf("failed to create request object: %w", err)
 	}
 
-	tlsResp, sessionCookies, err := fh.tlsClientWrapper.Do(input.TLSClientIdentifier, input.ProxyUrl, BuildCookies(input.RequestCookies), tlsReq)
+	tlsResp, sessionId, sessionCookies, err := fh.tlsClientWrapper.Do(input.SessionId, input.TLSClientIdentifier, input.ProxyUrl, BuildCookies(input.RequestCookies), tlsReq)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to do tls-client request: %w", err)
@@ -94,6 +96,7 @@ func (fh ForwardedRequestHandler) Handle(ctx context.Context, request *apiserver
 	}
 
 	resp := ForwardedRequestHandlerResponse{
+		SessionId:       mdl.EmptyIfNil(sessionId),
 		StatusCode:      tlsResp.StatusCode,
 		ResponseBody:    string(respBodyBytes),
 		ResponseHeaders: tlsResp.Header,

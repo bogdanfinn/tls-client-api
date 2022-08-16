@@ -3,20 +3,24 @@ package tls_client_wrapper
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	http "github.com/bogdanfinn/fhttp"
 	tls_client "github.com/bogdanfinn/tls-client"
+	"github.com/google/uuid"
 	"github.com/justtrackio/gosoline/pkg/cfg"
 	"github.com/justtrackio/gosoline/pkg/log"
 	"github.com/justtrackio/gosoline/pkg/mdl"
 )
 
 type TLSClientWrapper interface {
-	Do(tlsClientIdentifier string, proxy *string, cookies []*http.Cookie, req *http.Request) (*http.Response, []*http.Cookie, error)
+	Do(sessionId *string, tlsClientIdentifier string, proxy *string, cookies []*http.Cookie, req *http.Request) (*http.Response, *string, []*http.Cookie, error)
 }
 
 type tlsClientWrapper struct {
+	sync.Mutex
 	logger                  log.Logger
+	clients                 map[string]tls_client.HttpClient
 	tlsClientTimeoutSeconds int
 }
 
@@ -24,10 +28,48 @@ func NewTLSClientWrapper(ctx context.Context, config cfg.Config, logger log.Logg
 	return &tlsClientWrapper{
 		logger:                  logger,
 		tlsClientTimeoutSeconds: config.GetInt("tls_client_timeout_seconds", 30),
+		clients:                 make(map[string]tls_client.HttpClient),
 	}, nil
 }
 
-func (w *tlsClientWrapper) Do(tlsClientIdentifier string, proxy *string, cookies []*http.Cookie, req *http.Request) (*http.Response, []*http.Cookie, error) {
+func (w *tlsClientWrapper) Do(sessionId *string, tlsClientIdentifier string, proxy *string, cookies []*http.Cookie, req *http.Request) (*http.Response, *string, []*http.Cookie, error) {
+	tlsClient, newSessionId, err := w.getTlsClient(sessionId, tlsClientIdentifier, proxy)
+
+	if err != nil {
+		return nil, newSessionId, nil, fmt.Errorf("could not create tls http client: %w", err)
+	}
+
+	if len(cookies) > 0 {
+		tlsClient.SetCookies(req.URL, cookies)
+	}
+
+	resp, err := tlsClient.Do(req)
+
+	if err != nil {
+		return nil, newSessionId, nil, fmt.Errorf("failed to get response: %w", err)
+	}
+
+	sessionCookies := tlsClient.GetCookies(req.URL)
+
+	return resp, newSessionId, sessionCookies, nil
+}
+
+func (w *tlsClientWrapper) getTlsClient(sessionId *string, tlsClientIdentifier string, proxy *string) (tls_client.HttpClient, *string, error) {
+	w.Lock()
+	defer w.Unlock()
+
+	newSessionId := uuid.New().String()
+	if mdl.EmptyIfNil(sessionId) != "" {
+		newSessionId = mdl.EmptyIfNil(sessionId)
+	}
+
+	client, ok := w.clients[newSessionId]
+
+	if ok {
+		w.logger.Info("found client in cache for session id: %s", newSessionId)
+		return client, mdl.Box(newSessionId), nil
+	}
+
 	tlsClientProfile := w.getTlsClientProfile(tlsClientIdentifier)
 
 	options := []tls_client.HttpClientOption{
@@ -41,23 +83,10 @@ func (w *tlsClientWrapper) Do(tlsClientIdentifier string, proxy *string, cookies
 
 	tlsClient, err := tls_client.NewHttpClient(w.logger, options...)
 
-	if err != nil {
-		return nil, nil, fmt.Errorf("could not create tls http client: %w", err)
-	}
+	w.clients[newSessionId] = tlsClient
+	w.logger.Info("stored new client for session: %s", newSessionId)
 
-	if len(cookies) > 0 {
-		tlsClient.SetCookies(req.URL, cookies)
-	}
-
-	resp, err := tlsClient.Do(req)
-
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed to get response: %w", err)
-	}
-
-	sessionCookies := tlsClient.GetCookies(req.URL)
-
-	return resp, sessionCookies, nil
+	return tlsClient, mdl.Box(newSessionId), err
 }
 
 func (w *tlsClientWrapper) getTlsClientProfile(tlsClientIdentifier string) tls_client.ClientProfile {

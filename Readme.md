@@ -39,6 +39,7 @@ Afterwards you can just run the following script: `cmd/tls-client-api/build.sh S
 You need to do a POST Request against this running API Service with the following JSON Request Body:
 ```json
 {
+  "sessionId": "",
   "tlsClientIdentifier": "chrome_104",
   "proxyUrl": "",
   "headerOrder": [
@@ -64,6 +65,7 @@ You need to do a POST Request against this running API Service with the followin
 }
 ```
 * If `tlsClientIdentifier` is not specified chrome_104 will be used
+* `sessionId` is optional. When not provided the API creates a new Session. On every forwarded request you will receive the sessionId in the response to be able to reuse sessions (cookies). Be aware that a proxy or a tls profile can not be changed during a session. 
 * If you do not want to set `requestBody` or `proxyUrl` use `null` instead of empty string
 * Header order might be random when no order is specified
 
