@@ -69,6 +69,19 @@ You need to do a POST Request against this running API Service with the followin
 * If you do not want to set `requestBody` or `proxyUrl` use `null` instead of empty string
 * Header order might be random when no order is specified
 
+#### Response
+The Response from the API looks like that:
+```json
+{
+  "sessionId": "some reusable sessionId",
+  "status": 200,
+  "body": "The Response as string here or the error message",
+  "headers": {},
+  "cookies": {}
+}
+```
+* In case of an error the status code will be 0
+
 #### JavaScript Fetch
 ```js
 var myHeaders = new Headers();
@@ -128,7 +141,11 @@ curl --location --request POST '127.0.0.1:8080/api/forward' \
 ```
 
 ### Frequently Asked Questions / Errors
-Please refer to https://github.com/bogdanfinn/tls-client#frequently-asked-questions--errors
+* **I can not do a successful POST Request.**
+
+Be aware that when you do a POST Request an want to provide a forwarded request body in the `requestBody` field it has to be a string. That means if you want to send JSON you need to stringify this JSON to a string first.
+
+For more Questions and answers please refer to https://github.com/bogdanfinn/tls-client#frequently-asked-questions--errors
 
 ### Questions?
 

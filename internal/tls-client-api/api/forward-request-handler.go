@@ -42,12 +42,11 @@ type CookieInput struct {
 }
 
 type ForwardedRequestHandlerResponse struct {
-	SessionId       string              `json:"sessionId"`
-	StatusCode      int                 `json:"statusCode"`
-	ResponseBody    string              `json:"responseBody"`
-	ResponseHeaders map[string][]string `json:"responseHeaders"`
-	ResponseCookies map[string]string   `json:"responseCookies"`
-	SessionCookies  map[string]string   `json:"sessionCookies"`
+	SessionId string              `json:"sessionId"`
+	Status    int                 `json:"status"`
+	Body      string              `json:"body"`
+	Headers   map[string][]string `json:"headers"`
+	Cookies   map[string]string   `json:"cookies"`
 }
 
 func NewForwardedRequestHandler(ctx context.Context, config cfg.Config, logger log.Logger) (gin.HandlerFunc, error) {
@@ -73,35 +72,34 @@ func (fh ForwardedRequestHandler) Handle(ctx context.Context, request *apiserver
 	input, ok := request.Body.(*ForwardedRequestHandlerRequest)
 
 	if !ok {
-		return nil, fmt.Errorf("bad request body provided")
+		return fh.handleErrorResponse(nil, fmt.Errorf("bad request body provided"))
 	}
 
 	tlsReq, err := fh.buildRequest(input)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to create request object: %w", err)
+		return fh.handleErrorResponse(nil, fmt.Errorf("failed to create request object: %w", err))
 	}
 
 	tlsResp, sessionId, sessionCookies, err := fh.tlsClientWrapper.Do(input.SessionId, input.TLSClientIdentifier, input.ProxyUrl, BuildCookies(input.RequestCookies), tlsReq)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to do tls-client request: %w", err)
+		return fh.handleErrorResponse(sessionId, fmt.Errorf("failed to do tls-client request: %w", err))
 	}
 
 	defer tlsResp.Body.Close()
 
 	respBodyBytes, err := ioutil.ReadAll(tlsResp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w", err)
+		return fh.handleErrorResponse(sessionId, fmt.Errorf("failed to read response body: %w", err))
 	}
 
 	resp := ForwardedRequestHandlerResponse{
-		SessionId:       mdl.EmptyIfNil(sessionId),
-		StatusCode:      tlsResp.StatusCode,
-		ResponseBody:    string(respBodyBytes),
-		ResponseHeaders: tlsResp.Header,
-		ResponseCookies: CookiesToMap(tlsResp.Cookies()),
-		SessionCookies:  CookiesToMap(sessionCookies),
+		SessionId: mdl.EmptyIfNil(sessionId),
+		Status:    tlsResp.StatusCode,
+		Body:      string(respBodyBytes),
+		Headers:   tlsResp.Header,
+		Cookies:   CookiesToMap(sessionCookies),
 	}
 
 	return apiserver.NewJsonResponse(resp), nil
@@ -137,4 +135,18 @@ func (fh ForwardedRequestHandler) buildRequest(input *ForwardedRequestHandlerReq
 	tlsReq.Header = headers
 
 	return tlsReq, nil
+}
+
+func (fh ForwardedRequestHandler) handleErrorResponse(sessionId *string, err error) (*apiserver.Response, error) {
+	fh.logger.Error("error during api request forwarding: %w", err)
+
+	resp := ForwardedRequestHandlerResponse{
+		SessionId: mdl.EmptyIfNil(sessionId),
+		Status:    0,
+		Body:      err.Error(),
+		Headers:   nil,
+		Cookies:   nil,
+	}
+
+	return apiserver.NewJsonResponse(resp), nil
 }
