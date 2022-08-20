@@ -24,6 +24,7 @@ type ForwardedRequestHandler struct {
 type ForwardedRequestHandlerRequest struct {
 	SessionId           *string           `json:"sessionId"`
 	TLSClientIdentifier string            `json:"tlsClientIdentifier"`
+	Ja3String           string            `json:"ja3String"`
 	ProxyUrl            *string           `json:"proxyUrl"`
 	Headers             map[string]string `json:"headers"`
 	HeaderOrder         []string          `json:"headerOrder"`
@@ -81,7 +82,7 @@ func (fh ForwardedRequestHandler) Handle(ctx context.Context, request *apiserver
 		return fh.handleErrorResponse(nil, fmt.Errorf("failed to create request object: %w", err))
 	}
 
-	tlsResp, sessionId, sessionCookies, err := fh.tlsClientWrapper.Do(input.SessionId, input.TLSClientIdentifier, input.ProxyUrl, BuildCookies(input.RequestCookies), tlsReq)
+	tlsResp, sessionId, sessionCookies, err := fh.tlsClientWrapper.Do(input.SessionId, input.TLSClientIdentifier, input.Ja3String, input.ProxyUrl, BuildCookies(input.RequestCookies), tlsReq)
 
 	if err != nil {
 		return fh.handleErrorResponse(sessionId, fmt.Errorf("failed to do tls-client request: %w", err))

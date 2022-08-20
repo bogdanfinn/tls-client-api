@@ -14,7 +14,7 @@ import (
 )
 
 type TLSClientWrapper interface {
-	Do(sessionId *string, tlsClientIdentifier string, proxy *string, cookies []*http.Cookie, req *http.Request) (*http.Response, *string, []*http.Cookie, error)
+	Do(sessionId *string, tlsClientIdentifier string, ja3String string, proxy *string, cookies []*http.Cookie, req *http.Request) (*http.Response, *string, []*http.Cookie, error)
 }
 
 type tlsClientWrapper struct {
@@ -32,8 +32,16 @@ func NewTLSClientWrapper(ctx context.Context, config cfg.Config, logger log.Logg
 	}, nil
 }
 
-func (w *tlsClientWrapper) Do(sessionId *string, tlsClientIdentifier string, proxy *string, cookies []*http.Cookie, req *http.Request) (*http.Response, *string, []*http.Cookie, error) {
-	tlsClient, newSessionId, err := w.getTlsClient(sessionId, tlsClientIdentifier, proxy)
+func (w *tlsClientWrapper) Do(sessionId *string, tlsClientIdentifier string, ja3String string, proxy *string, cookies []*http.Cookie, req *http.Request) (*http.Response, *string, []*http.Cookie, error) {
+	if tlsClientIdentifier != "" && ja3String != "" {
+		return nil, sessionId, nil, fmt.Errorf("can not built client out of client identifier and ja3string. Please provide only one of them")
+	}
+
+	if tlsClientIdentifier == "" && ja3String == "" {
+		return nil, sessionId, nil, fmt.Errorf("can not built client out without client identifier and without ja3string. Please provide only one of them")
+	}
+
+	tlsClient, newSessionId, err := w.getTlsClient(sessionId, tlsClientIdentifier, ja3String, proxy)
 
 	if err != nil {
 		return nil, newSessionId, nil, fmt.Errorf("could not create tls http client: %w", err)
@@ -54,7 +62,7 @@ func (w *tlsClientWrapper) Do(sessionId *string, tlsClientIdentifier string, pro
 	return resp, newSessionId, sessionCookies, nil
 }
 
-func (w *tlsClientWrapper) getTlsClient(sessionId *string, tlsClientIdentifier string, proxy *string) (tls_client.HttpClient, *string, error) {
+func (w *tlsClientWrapper) getTlsClient(sessionId *string, tlsClientIdentifier string, ja3String string, proxy *string) (tls_client.HttpClient, *string, error) {
 	w.Lock()
 	defer w.Unlock()
 
@@ -70,11 +78,24 @@ func (w *tlsClientWrapper) getTlsClient(sessionId *string, tlsClientIdentifier s
 		return client, mdl.Box(newSessionId), nil
 	}
 
-	tlsClientProfile := w.getTlsClientProfile(tlsClientIdentifier)
+	var clientProfile tls_client.ClientProfile
+
+	if tlsClientIdentifier != "" {
+		clientProfile = w.getTlsClientProfile(tlsClientIdentifier)
+	}
+
+	if ja3String != "" {
+		var decodeErr error
+		clientProfile, decodeErr = tls_client.GetClientProfileFromJa3String(ja3String)
+
+		if decodeErr != nil {
+			return nil, mdl.Box(newSessionId), fmt.Errorf("can not build http client out of ja3 string: %w", decodeErr)
+		}
+	}
 
 	options := []tls_client.HttpClientOption{
 		tls_client.WithTimeout(w.tlsClientTimeoutSeconds),
-		tls_client.WithClientProfile(tlsClientProfile),
+		tls_client.WithClientProfile(clientProfile),
 	}
 
 	if proxy != nil && mdl.EmptyIfNil(proxy) != "" {

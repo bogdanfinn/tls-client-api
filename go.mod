@@ -3,9 +3,10 @@ module github.com/bogdanfinn/tls-client-api
 go 1.18
 
 require (
-	github.com/bogdanfinn/fhttp v0.3.0
-	github.com/bogdanfinn/tls-client v0.3.0
+	github.com/bogdanfinn/fhttp v0.4.0
+	github.com/bogdanfinn/tls-client v0.4.2
 	github.com/gin-gonic/gin v1.8.1
+	github.com/google/uuid v1.3.0
 	github.com/justtrackio/gosoline v0.3.99
 )
 
@@ -43,7 +44,7 @@ require (
 	github.com/aws/aws-xray-sdk-go v1.7.0 // indirect
 	github.com/aws/smithy-go v1.11.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bogdanfinn/utls v0.3.0 // indirect
+	github.com/bogdanfinn/utls v0.4.0 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
@@ -66,7 +67,6 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.15.1 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.2.0 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
@@ -106,8 +106,8 @@ require (
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/sha1sum/aws_signing_client v0.0.0-20170514202702-9088e4c7b34b // indirect
 	github.com/spf13/cast v1.4.1 // indirect
-	github.com/stretchr/objx v0.2.0 // indirect
-	github.com/stretchr/testify v1.7.1 // indirect
+	github.com/stretchr/objx v0.4.0 // indirect
+	github.com/stretchr/testify v1.8.0 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.34.0 // indirect
@@ -127,7 +127,7 @@ require (
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/tomb.v2 v2.0.0-20161208151619-d5d1b5820637 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 // replacement is needed to build the application for windows
