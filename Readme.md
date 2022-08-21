@@ -41,6 +41,7 @@ You need to do a POST Request against this running API Service with the followin
 {
   "sessionId": "",
   "tlsClientIdentifier": "chrome_104",
+  "ja3String": "771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,0-23-65281-10-11-35-16-5-13-18-51-45-43-27-17513,29-23-24,0",
   "proxyUrl": "",
   "headerOrder": [
     "key1",
@@ -64,7 +65,8 @@ You need to do a POST Request against this running API Service with the followin
   "requestMethod": "GET"
 }
 ```
-* If `tlsClientIdentifier` is not specified chrome_104 will be used
+* If `tlsClientIdentifier` is not specified chrome_104 will be used.
+* You can use your own client by providing a ja3String instead of `tlsClientIdentifier` 
 * `sessionId` is optional. When not provided the API creates a new Session. On every forwarded request you will receive the sessionId in the response to be able to reuse sessions (cookies). Be aware that a proxy or a tls profile can not be changed during a session. 
 * If you do not want to set `requestBody` or `proxyUrl` use `null` instead of empty string
 * Header order might be random when no order is specified
@@ -143,7 +145,11 @@ curl --location --request POST '127.0.0.1:8080/api/forward' \
 ### Frequently Asked Questions / Errors
 * **I can not do a successful POST Request.**
 
-Be aware that when you do a POST Request an want to provide a forwarded request body in the `requestBody` field it has to be a string. That means if you want to send JSON you need to stringify this JSON to a string first.
+Be aware that when you do a POST Request and want to provide a forwarded request body in the `requestBody` field it has to be a string. That means if you want to send JSON you need to stringify this JSON to a string first.
+
+* **How can I use other request body content types besides json? **
+
+`requestBody` accepts strings and forwards them as the payload. combined with the `content-type` header the api makes the actual request body out of it. You can use for example `application/x-www-form-urlencoded` content type in the header and then just provide as request body a string similar to `key=value&key=value`
 
 For more Questions and answers please refer to https://github.com/bogdanfinn/tls-client#frequently-asked-questions--errors
 
