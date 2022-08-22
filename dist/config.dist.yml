@@ -37,3 +37,4 @@ api_cors_allowed_headers: ["X-API-KEY", "X-API-VIEW", "Content-Type"]
 api_cors_allowed_methods: ["POST", "GET", "PUT", "DELETE"]
 
 tls_client_timeout_seconds: 30
+tls_client_follow_redirects: false

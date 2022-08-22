@@ -19,16 +19,18 @@ type TLSClientWrapper interface {
 
 type tlsClientWrapper struct {
 	sync.Mutex
-	logger                  log.Logger
-	clients                 map[string]tls_client.HttpClient
-	tlsClientTimeoutSeconds int
+	logger                   log.Logger
+	clients                  map[string]tls_client.HttpClient
+	tlsClientTimeoutSeconds  int
+	tlsClientFollowRedirects bool
 }
 
 func NewTLSClientWrapper(ctx context.Context, config cfg.Config, logger log.Logger) (TLSClientWrapper, error) {
 	return &tlsClientWrapper{
-		logger:                  logger,
-		tlsClientTimeoutSeconds: config.GetInt("tls_client_timeout_seconds", 30),
-		clients:                 make(map[string]tls_client.HttpClient),
+		logger:                   logger,
+		tlsClientTimeoutSeconds:  config.GetInt("tls_client_timeout_seconds", 30),
+		tlsClientFollowRedirects: config.GetBool("tls_client_follow_redirects", false),
+		clients:                  make(map[string]tls_client.HttpClient),
 	}, nil
 }
 
@@ -96,6 +98,10 @@ func (w *tlsClientWrapper) getTlsClient(sessionId *string, tlsClientIdentifier s
 	options := []tls_client.HttpClientOption{
 		tls_client.WithTimeout(w.tlsClientTimeoutSeconds),
 		tls_client.WithClientProfile(clientProfile),
+	}
+
+	if !w.tlsClientFollowRedirects {
+		options = append(options, tls_client.WithNotFollowRedirects())
 	}
 
 	if proxy != nil && mdl.EmptyIfNil(proxy) != "" {
