@@ -11,8 +11,11 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 - safari_15_3
 - safari_15_5
 - safari_ios_15_5
+- safari_ios_15_6
 - firefox_102
+- firefox_104
 - opera_89
+- opera_90
 
 #### Need other clients?
 
