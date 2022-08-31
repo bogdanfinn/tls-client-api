@@ -6,6 +6,7 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 
 ### Supported Clients
 
+- chrome_105
 - chrome_104
 - chrome_103
 - safari_15_3
@@ -44,7 +45,7 @@ You need to do a POST Request against this running API Service with the followin
 ```json
 {
   "sessionId": "",
-  "tlsClientIdentifier": "chrome_104",
+  "tlsClientIdentifier": "chrome_105",
   "ja3String": "771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,0-23-65281-10-11-35-16-5-13-18-51-45-43-27-17513,29-23-24,0",
   "proxyUrl": "",
   "headerOrder": [
@@ -69,7 +70,7 @@ You need to do a POST Request against this running API Service with the followin
   "requestMethod": "GET"
 }
 ```
-* If `tlsClientIdentifier` is not specified chrome_104 will be used.
+* If `tlsClientIdentifier` is not specified chrome_105 will be used.
 * You can use your own client by providing a ja3String instead of `tlsClientIdentifier` 
 * `sessionId` is optional. When not provided the API creates a new Session. On every forwarded request you will receive the sessionId in the response to be able to reuse sessions (cookies). Be aware that a proxy or a tls profile can not be changed during a session. 
 * If you do not want to set `requestBody` or `proxyUrl` use `null` instead of empty string
@@ -95,7 +96,7 @@ myHeaders.append("x-api-key", "my-auth-key-1");
 myHeaders.append("Content-Type", "application/json");
 
 var raw = JSON.stringify({
-  "tlsClientIdentifier": "chrome_104",
+  "tlsClientIdentifier": "chrome_105",
   "requestUrl": "https://tls.peet.ws/api/all",
   "requestMethod": "GET"
 });
@@ -121,7 +122,7 @@ import json
 url = "127.0.0.1:8080/api/forward"
 
 payload = json.dumps({
-  "tlsClientIdentifier": "chrome_104",
+  "tlsClientIdentifier": "chrome_105",
   "requestUrl": "https://tls.peet.ws/api/all",
   "requestMethod": "GET"
 })
@@ -140,7 +141,7 @@ curl --location --request POST '127.0.0.1:8080/api/forward' \
 --header 'x-api-key: my-auth-key-1' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "tlsClientIdentifier": "chrome_104",
+    "tlsClientIdentifier": "chrome_105",
     "requestUrl": "https://tls.peet.ws/api/all",
     "requestMethod": "GET"
 }'
@@ -159,4 +160,4 @@ For more Questions and answers please refer to https://github.com/bogdanfinn/tls
 
 ### Questions?
 
-Contact me on discord
+Contact me on discord or join my discord support server: https: // discord.gg / 7Ej9eJvHqk 
