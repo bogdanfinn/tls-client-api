@@ -23,7 +23,7 @@ func BuildCookies(cookies []CookieInput) []*http.Cookie {
 			Value:   cookie.Value,
 			Path:    cookie.Path,
 			Domain:  cookie.Domain,
-			Expires: cookie.Expires,
+			Expires: cookie.Expires.Time,
 		})
 	}
 

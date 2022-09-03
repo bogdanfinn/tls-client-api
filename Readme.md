@@ -160,4 +160,4 @@ For more Questions and answers please refer to https://github.com/bogdanfinn/tls
 
 ### Questions?
 
-Contact me on discord or join my discord support server: https: // discord.gg / 7Ej9eJvHqk 
+Join my discord support server: https: // discord.gg / 7Ej9eJvHqk 
