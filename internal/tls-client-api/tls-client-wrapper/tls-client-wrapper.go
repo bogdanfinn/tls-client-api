@@ -6,15 +6,36 @@ import (
 	"sync"
 
 	http "github.com/bogdanfinn/fhttp"
+	"github.com/bogdanfinn/fhttp/http2"
 	tls_client "github.com/bogdanfinn/tls-client"
+	tls "github.com/bogdanfinn/utls"
 	"github.com/google/uuid"
 	"github.com/justtrackio/gosoline/pkg/cfg"
 	"github.com/justtrackio/gosoline/pkg/log"
 	"github.com/justtrackio/gosoline/pkg/mdl"
 )
 
+type CustomTlsClient struct {
+	Ja3String         string            `json:"ja3String"`
+	H2Settings        map[uint16]uint32 `json:"h2Settings"`
+	H2SettingsOrder   []uint16          `json:"h2SettingsOrder"`
+	PseudoHeaderOrder []string          `json:"pseudoHeaderOrder"`
+	ConnectionFlow    uint32            `json:"connectionFlow"`
+	PriorityFrames    []PriorityFrames  `json:"priorityFrames"`
+}
+
+type PriorityFrames struct {
+	StreamID      uint32 `json:"streamID"`
+	PriorityParam struct {
+		StreamDep uint32 `json:"streamDep"`
+		Exclusive bool   `json:"exclusive"`
+		Weight    uint8  `json:"weight"`
+	} `json:"priorityParam"`
+}
+
 type TLSClientWrapper interface {
-	Do(sessionId *string, tlsClientIdentifier string, ja3String string, proxy *string, cookies []*http.Cookie, req *http.Request) (*http.Response, *string, []*http.Cookie, error)
+	BuildTlsClientProfile(tlsClientIdentifier string, customTlsClientProfile *CustomTlsClient) (tls_client.ClientProfile, error)
+	Do(sessionId *string, clientProfile tls_client.ClientProfile, proxy *string, followRedirects bool, cookies []*http.Cookie, req *http.Request) (*http.Response, *string, []*http.Cookie, error)
 }
 
 type tlsClientWrapper struct {
@@ -34,16 +55,28 @@ func NewTLSClientWrapper(ctx context.Context, config cfg.Config, logger log.Logg
 	}, nil
 }
 
-func (w *tlsClientWrapper) Do(sessionId *string, tlsClientIdentifier string, ja3String string, proxy *string, cookies []*http.Cookie, req *http.Request) (*http.Response, *string, []*http.Cookie, error) {
-	if tlsClientIdentifier != "" && ja3String != "" {
-		return nil, sessionId, nil, fmt.Errorf("can not built client out of client identifier and ja3string. Please provide only one of them")
+func (w *tlsClientWrapper) BuildTlsClientProfile(tlsClientIdentifier string, customTlsClientProfile *CustomTlsClient) (tls_client.ClientProfile, error) {
+	var clientProfile tls_client.ClientProfile
+
+	if tlsClientIdentifier != "" {
+		clientProfile = w.getTlsClientProfile(tlsClientIdentifier)
 	}
 
-	if tlsClientIdentifier == "" && ja3String == "" {
-		return nil, sessionId, nil, fmt.Errorf("can not built client out without client identifier and without ja3string. Please provide only one of them")
+	if customTlsClientProfile != nil {
+		clientHelloId, h2Settings, h2SettingsOrder, pseudoHeaderOrder, connectionFlow, priorityFrames, err := w.getCustomTlsClientProfile(customTlsClientProfile)
+
+		if err != nil {
+			return tls_client.ClientProfile{}, fmt.Errorf("can not build http client out of custom tls client information: %w", err)
+		}
+
+		clientProfile = tls_client.NewClientProfile(clientHelloId, h2Settings, h2SettingsOrder, pseudoHeaderOrder, connectionFlow, priorityFrames)
 	}
 
-	tlsClient, newSessionId, err := w.getTlsClient(sessionId, tlsClientIdentifier, ja3String, proxy)
+	return clientProfile, nil
+}
+
+func (w *tlsClientWrapper) Do(sessionId *string, clientProfile tls_client.ClientProfile, proxy *string, followRedirects bool, cookies []*http.Cookie, req *http.Request) (*http.Response, *string, []*http.Cookie, error) {
+	tlsClient, newSessionId, err := w.getTlsClient(sessionId, clientProfile, proxy, followRedirects)
 
 	if err != nil {
 		return nil, newSessionId, nil, fmt.Errorf("could not create tls http client: %w", err)
@@ -64,7 +97,7 @@ func (w *tlsClientWrapper) Do(sessionId *string, tlsClientIdentifier string, ja3
 	return resp, newSessionId, sessionCookies, nil
 }
 
-func (w *tlsClientWrapper) getTlsClient(sessionId *string, tlsClientIdentifier string, ja3String string, proxy *string) (tls_client.HttpClient, *string, error) {
+func (w *tlsClientWrapper) getTlsClient(sessionId *string, clientProfile tls_client.ClientProfile, proxy *string, followRedirects bool) (tls_client.HttpClient, *string, error) {
 	w.Lock()
 	defer w.Unlock()
 
@@ -77,22 +110,17 @@ func (w *tlsClientWrapper) getTlsClient(sessionId *string, tlsClientIdentifier s
 
 	if ok {
 		w.logger.Info("found client in cache for session id: %s", newSessionId)
-		return client, mdl.Box(newSessionId), nil
-	}
 
-	var clientProfile tls_client.ClientProfile
-
-	if tlsClientIdentifier != "" {
-		clientProfile = w.getTlsClientProfile(tlsClientIdentifier)
-	}
-
-	if ja3String != "" {
-		var decodeErr error
-		clientProfile, decodeErr = tls_client.GetClientProfileFromJa3String(ja3String)
-
-		if decodeErr != nil {
-			return nil, mdl.Box(newSessionId), fmt.Errorf("can not build http client out of ja3 string: %w", decodeErr)
+		modifiedClient, changed, err := w.handleModification(client, proxy, followRedirects)
+		if err != nil {
+			return nil, mdl.Box(newSessionId), fmt.Errorf("failed to modify existing client: %w", err)
 		}
+
+		if changed {
+			w.clients[newSessionId] = modifiedClient
+		}
+
+		return modifiedClient, mdl.Box(newSessionId), nil
 	}
 
 	options := []tls_client.HttpClientOption{
@@ -125,4 +153,66 @@ func (w *tlsClientWrapper) getTlsClientProfile(tlsClientIdentifier string) tls_c
 	}
 
 	return tlsClientProfile
+}
+
+func (w *tlsClientWrapper) getCustomTlsClientProfile(customClientDefinition *CustomTlsClient) (tls.ClientHelloID, map[http2.SettingID]uint32, []http2.SettingID, []string, uint32, []http2.Priority, error) {
+	specFactory, err := tls_client.GetSpecFactorFromJa3String(customClientDefinition.Ja3String)
+
+	if err != nil {
+		return tls.ClientHelloID{}, nil, nil, nil, 0, nil, err
+	}
+
+	h2Settings := make(map[http2.SettingID]uint32)
+	for key, value := range customClientDefinition.H2Settings {
+		h2Settings[http2.SettingID(key)] = value
+	}
+
+	var h2SettingsOrder []http2.SettingID
+	for _, order := range customClientDefinition.H2SettingsOrder {
+		h2SettingsOrder = append(h2SettingsOrder, http2.SettingID(order))
+	}
+
+	pseudoHeaderOrder := customClientDefinition.PseudoHeaderOrder
+	connectionFlow := customClientDefinition.ConnectionFlow
+
+	var priorityFrames []http2.Priority
+	for _, priority := range customClientDefinition.PriorityFrames {
+		priorityFrames = append(priorityFrames, http2.Priority{
+			StreamID: priority.StreamID,
+			PriorityParam: http2.PriorityParam{
+				StreamDep: priority.PriorityParam.StreamDep,
+				Exclusive: priority.PriorityParam.Exclusive,
+				Weight:    priority.PriorityParam.Weight,
+			},
+		})
+	}
+
+	clientHelloId := tls.ClientHelloID{
+		Client:      "Custom",
+		Version:     "1",
+		Seed:        nil,
+		SpecFactory: specFactory,
+	}
+
+	return clientHelloId, h2Settings, h2SettingsOrder, pseudoHeaderOrder, connectionFlow, priorityFrames, nil
+}
+
+func (w *tlsClientWrapper) handleModification(client tls_client.HttpClient, proxyUrl *string, followRedirects bool) (tls_client.HttpClient, bool, error) {
+	changed := false
+
+	if proxyUrl != nil && client.GetProxy() != *proxyUrl {
+		err := client.SetProxy(*proxyUrl)
+		if err != nil {
+			return nil, false, fmt.Errorf("failed to change proxy url of client: %w", err)
+		}
+
+		changed = true
+	}
+
+	if client.GetFollowRedirect() != followRedirects {
+		client.SetFollowRedirect(followRedirects)
+		changed = true
+	}
+
+	return client, changed, nil
 }
