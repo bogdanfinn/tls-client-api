@@ -46,7 +46,6 @@ You need to do a POST Request against this running API Service with the followin
 {
   "sessionId": "",
   "tlsClientIdentifier": "chrome_105",
-  "ja3String": "771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,0-23-65281-10-11-35-16-5-13-18-51-45-43-27-17513,29-23-24,0",
   "proxyUrl": "",
   "headerOrder": [
     "key1",
@@ -160,4 +159,5 @@ For more Questions and answers please refer to https://github.com/bogdanfinn/tls
 
 ### Questions?
 
-Join my discord support server: https: // discord.gg / 7Ej9eJvHqk 
+Join my discord support server: https: // discord.gg / 7Ej9eJvHqk
+No Support in DMs!
