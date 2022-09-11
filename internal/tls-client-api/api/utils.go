@@ -2,19 +2,10 @@ package api
 
 import (
 	http "github.com/bogdanfinn/fhttp"
+	tls_client_cffi_src "github.com/bogdanfinn/tls-client/cffi_src"
 )
 
-func CookiesToMap(cookies []*http.Cookie) map[string]string {
-	ret := make(map[string]string, 0)
-
-	for _, c := range cookies {
-		ret[c.Name] = c.String()
-	}
-
-	return ret
-}
-
-func BuildCookies(cookies []CookieInput) []*http.Cookie {
+func buildCookies(cookies []tls_client_cffi_src.CookieInput) []*http.Cookie {
 	var ret []*http.Cookie
 
 	for _, cookie := range cookies {
