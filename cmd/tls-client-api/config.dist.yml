@@ -29,12 +29,9 @@ api:
     read: 120s
     write: 120s
     idle: 120s
-  auth:
-    keys: ["my-auth-key-1", "my-auth-key-2", "my-auth-key-3"]
+
+api_auth_keys: ["my-auth-key-1", "my-auth-key-2", "my-auth-key-3"]
 
 api_cors_allowed_origin_pattern: ""
 api_cors_allowed_headers: ["X-API-KEY", "X-API-VIEW", "Content-Type"]
 api_cors_allowed_methods: ["POST", "GET", "PUT", "DELETE"]
-
-tls_client_timeout_seconds: 30
-tls_client_follow_redirects: false

@@ -16,7 +16,7 @@ func DefineRouter(ctx context.Context, config cfg.Config, logger log.Logger) (*a
 	logger = logger.WithChannel("tls-client-api")
 
 	authenticate := auth.NewChainHandler(map[string]auth.Authenticator{
-		auth.ByApiKey: auth.NewUncheckedKeyAuthenticator(config, logger),
+		auth.ByApiKey: auth.NewConfigKeyAuthenticator(config, logger, auth.ProvideValueFromHeader(auth.HeaderApiKey)),
 	})
 
 	d.Use(authenticate)
