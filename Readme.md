@@ -44,8 +44,36 @@ Afterwards you can just run the following script: `cmd/tls-client-api/build.sh S
 You need to do a POST Request against this running API Service with the following JSON Request Body:
 ```json
 {
-  "sessionId": "",
-  "tlsClientIdentifier": "chrome_105",
+  "sessionId": "reusableSessionId",
+  "tlsClientIdentifier": "chrome_103",
+  "followRedirects": False,
+  "insecureSkipVerify": False,
+  "timeoutSeconds": 30,
+  "customTlsClient": {
+    "ja3String": "771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,0-23-65281-10-11-35-16-5-13-18-51-45-43-27-17513,29-23-24,0",
+    "h2Settings": {
+      1: 65536,
+      3: 1000,
+      4: 6291456,
+      6: 262144
+    },
+    "h2SettingsOrder": [
+      1,
+      3,
+      4,
+      6
+    ],
+    "pseudoHeaderOrder": [
+      ":method",
+      ":authority",
+      ":scheme",
+      ":path"
+    ],
+    "connectionFlow": 15663105,
+    "priorityFrames": [
+
+    ]
+  },
   "proxyUrl": "",
   "headerOrder": [
     "key1",
@@ -65,15 +93,27 @@ You need to do a POST Request against this running API Service with the followin
     }
   ],
   "requestUrl": "https://tls.peet.ws/api/all",
-  "requestBody": "",
+  "requestBody": "", // needs to be a string!
   "requestMethod": "GET"
 }
 ```
 * If `tlsClientIdentifier` is not specified chrome_105 will be used.
-* You can use your own client by providing a ja3String instead of `tlsClientIdentifier` 
-* `sessionId` is optional. When not provided the API creates a new Session. On every forwarded request you will receive the sessionId in the response to be able to reuse sessions (cookies). Be aware that a proxy or a tls profile can not be changed during a session. 
+* You can use your own client by providing `customTlsClient` instead of `tlsClientIdentifier` 
+* `sessionId` is optional. When not provided the API creates a new Session. On every forwarded request you will receive the sessionId in the response to be able to reuse sessions (cookies). 
+* Be aware that `insecureSkipVerify` and the `timeoutSeconds` can not be changed during a session. 
+* `followRedirects` and `proxyUrl` can be changed within a session.
 * If you do not want to set `requestBody` or `proxyUrl` use `null` instead of empty string
 * Header order might be random when no order is specified
+
+#### h2 seetings IDs
+```go
+	SettingHeaderTableSize      0x1
+	SettingEnablePush           0x2
+	SettingMaxConcurrentStreams 0x3
+	SettingInitialWindowSize    0x4
+	SettingMaxFrameSize         0x5
+	SettingMaxHeaderListSize    0x6
+```
 
 #### Response
 The Response from the API looks like that:
@@ -88,7 +128,7 @@ The Response from the API looks like that:
 ```
 * In case of an error the status code will be 0
 
-#### JavaScript Fetch
+#### JavaScript Fetch minified example
 ```js
 var myHeaders = new Headers();
 myHeaders.append("x-api-key", "my-auth-key-1");
@@ -113,7 +153,7 @@ fetch("127.0.0.1:8080/api/forward", requestOptions)
   .catch(error => console.log('error', error));
 ```
 
-#### Python Requests
+#### Python Requests minified example
 ```python
 import requests
 import json
@@ -134,7 +174,7 @@ response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
 ```
-#### CURL
+#### CURL minified example
 ```curl
 curl --location --request POST '127.0.0.1:8080/api/forward' \
 --header 'x-api-key: my-auth-key-1' \
