@@ -5,18 +5,21 @@
 This is an application which is using [gosoline](https://github.com/justtrackio/gosoline) and [TLS-Client](https://github.com/bogdanfinn/tls-client) to run a simple request forwarding service with the option to use specific tls fingerprints which are implemented in [TLS-client](https://github.com/bogdanfinn/tls-client).
 
 ### Supported Clients
-
 - chrome_105
 - chrome_104
 - chrome_103
 - safari_15_3
-- safari_15_5
+- safari_15_6_1
+- safari_16_0
+- safari_ipad_15_6
 - safari_ios_15_5
 - safari_ios_15_6
+- safari_ios_16_0
 - firefox_102
 - firefox_104
 - opera_89
 - opera_90
+- zalando_android_mobile
 
 #### Need other clients?
 
@@ -46,8 +49,9 @@ You need to do a POST Request against this running API Service with the followin
 {
   "sessionId": "reusableSessionId",
   "tlsClientIdentifier": "chrome_103",
-  "followRedirects": False,
-  "insecureSkipVerify": False,
+  "followRedirects": false,
+  "insecureSkipVerify": false,
+  "isByteResponse": false,
   "timeoutSeconds": 30,
   "customTlsClient": {
     "ja3String": "771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,0-23-65281-10-11-35-16-5-13-18-51-45-43-27-17513,29-23-24,0",
@@ -103,6 +107,7 @@ You need to do a POST Request against this running API Service with the followin
 * Be aware that `insecureSkipVerify` and the `timeoutSeconds` can not be changed during a session. 
 * `followRedirects` and `proxyUrl` can be changed within a session.
 * If you do not want to set `requestBody` or `proxyUrl` use `null` instead of empty string
+* When you set `isByteResponse` to `true` the response body will be a base64 encoded string. Useful when you want to download images for example.
 * Header order might be random when no order is specified
 
 #### h2 seetings IDs

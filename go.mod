@@ -3,11 +3,9 @@ module github.com/bogdanfinn/tls-client-api
 go 1.18
 
 require (
-	github.com/bogdanfinn/fhttp v0.5.0
-	github.com/bogdanfinn/tls-client v0.5.1
-	github.com/bogdanfinn/utls v0.5.0
+	github.com/bogdanfinn/fhttp v0.5.1
+	github.com/bogdanfinn/tls-client v0.5.2
 	github.com/gin-gonic/gin v1.8.1
-	github.com/google/uuid v1.3.0
 	github.com/justtrackio/gosoline v0.3.99
 )
 
@@ -45,6 +43,7 @@ require (
 	github.com/aws/aws-xray-sdk-go v1.7.0 // indirect
 	github.com/aws/smithy-go v1.11.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/bogdanfinn/utls v0.5.1 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
@@ -67,6 +66,7 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.15.1 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.2.0 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
@@ -133,8 +133,8 @@ require (
 // replacement is needed to build the application for windows
 replace github.com/justtrackio/gosoline => ../gosoline
 
-//replace github.com/bogdanfinn/fhttp => ../fhttp
+// replace github.com/bogdanfinn/fhttp => ../fhttp
 
-//replace github.com/bogdanfinn/utls => ../utls
+// replace github.com/bogdanfinn/utls => ../utls
 
-//replace github.com/bogdanfinn/tls-client => ../tls-client
+// replace github.com/bogdanfinn/tls-client => ../tls-client

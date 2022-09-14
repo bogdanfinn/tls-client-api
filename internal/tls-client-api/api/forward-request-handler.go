@@ -63,7 +63,7 @@ func (fh ForwardedRequestHandler) Handle(ctx context.Context, request *apiserver
 
 	sessionCookies := tlsClient.GetCookies(req.URL)
 
-	response, err := tls_client_cffi_src.BuildResponse(sessionId, resp, sessionCookies)
+	response, err := tls_client_cffi_src.BuildResponse(sessionId, resp, sessionCookies, input.IsByteResponse)
 
 	if err != nil {
 		return fh.handleErrorResponse(sessionId, err)
