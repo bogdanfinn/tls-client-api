@@ -230,8 +230,8 @@ github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnweb
 github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869/go.mod h1:Ekp36dRnpXw/yCqJaO+ZrUyxD+3VXMFFr56k5XYrpB4=
 github.com/bogdanfinn/fhttp v0.5.1 h1:OmF9FpZ26lajG5CLlIEs7YyhymrnWvNW0QTsYZ7SrUg=
 github.com/bogdanfinn/fhttp v0.5.1/go.mod h1:g17N9YxnbS6goM/txktpeWGJK36+k/GJxiNwhr95MyE=
-github.com/bogdanfinn/tls-client v0.5.2 h1:U+hA3PnNeSiMkZyQVKCxW8WCxpA0Uow1B7MmX7W72js=
-github.com/bogdanfinn/tls-client v0.5.2/go.mod h1:e0Xr8iHMuJm9f8ZSK4fm+A3ak7y5tsh7NbLk/YGOiV8=
+github.com/bogdanfinn/tls-client v0.5.3 h1:MMGh+mefhJSiZcn5NqyUMmC172JeAvnm9bgxRlbJN0c=
+github.com/bogdanfinn/tls-client v0.5.3/go.mod h1:e0Xr8iHMuJm9f8ZSK4fm+A3ak7y5tsh7NbLk/YGOiV8=
 github.com/bogdanfinn/utls v0.5.1 h1:7sjvsIIFDtnhFSBnzSjvek0JvE7WpC6gEPrKGl4SztY=
 github.com/bogdanfinn/utls v0.5.1/go.mod h1:FPF9ygi+iA4S/apxLKSXOUx7uIy7spLzl3AEFSKOeiI=
 github.com/boombuler/barcode v1.0.0/go.mod h1:paBWMcWSl3LHKBqUq+rly7CNSldXjb2rDl3JlRe0mD8=
