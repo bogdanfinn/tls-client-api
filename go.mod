@@ -3,8 +3,8 @@ module github.com/bogdanfinn/tls-client-api
 go 1.18
 
 require (
-	github.com/bogdanfinn/fhttp v0.5.1
-	github.com/bogdanfinn/tls-client v0.5.3
+	github.com/bogdanfinn/fhttp v0.5.2
+	github.com/bogdanfinn/tls-client v0.6.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/justtrackio/gosoline v0.3.99
 )
@@ -43,7 +43,7 @@ require (
 	github.com/aws/aws-xray-sdk-go v1.7.0 // indirect
 	github.com/aws/smithy-go v1.11.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bogdanfinn/utls v0.5.1 // indirect
+	github.com/bogdanfinn/utls v0.5.2 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
@@ -114,7 +114,7 @@ require (
 	github.com/wsxiaoys/terminal v0.0.0-20160513160801-0940f3fc43a0 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
-	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
+	golang.org/x/crypto v0.0.0-20220518034528-6f7dac969898 // indirect
 	golang.org/x/exp v0.0.0-20220613132600-b0d781184e0d // indirect
 	golang.org/x/net v0.0.0-20220622184535-263ec571b305 // indirect
 	golang.org/x/oauth2 v0.0.0-20220309155454-6242fa91716a // indirect

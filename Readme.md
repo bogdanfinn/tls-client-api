@@ -8,7 +8,6 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 - chrome_105
 - chrome_104
 - chrome_103
-- safari_15_3
 - safari_15_6_1
 - safari_16_0
 - safari_ipad_15_6
@@ -17,9 +16,13 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 - safari_ios_16_0
 - firefox_102
 - firefox_104
+- firefox_105
 - opera_89
 - opera_90
+- opera_91
 - zalando_android_mobile
+- nike_ios_mobile
+- nike_android_mobile
 
 #### Need other clients?
 
