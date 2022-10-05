@@ -5,6 +5,7 @@
 This is an application which is using [gosoline](https://github.com/justtrackio/gosoline) and [TLS-Client](https://github.com/bogdanfinn/tls-client) to run a simple request forwarding service with the option to use specific tls fingerprints which are implemented in [TLS-client](https://github.com/bogdanfinn/tls-client).
 
 ### Supported Clients
+- chrome_106
 - chrome_105
 - chrome_104
 - chrome_103
@@ -24,21 +25,22 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 - nike_ios_mobile
 - nike_android_mobile
 
+See: https://github.com/bogdanfinn/tls-client#supported-and-tested-clients
+
 #### Need other clients?
 
 Please open an issue on [this](https://github.com/bogdanfinn/tls-client) github repository. In the best case you provide the response of https://tls.peet.ws/api/all requested by the client you want to be implemented.
 
 ### Use API
-You can just run the prebuilt binaries in `dist`. There is a binary for linux, macos and windows. Just modify your config file next to the binary as explained below and start the application.
+You can just run the prebuilt binaries in the `dist` directory. There is a binary for linux, macos and windows. Just modify your `config.dist.yml` file next to the binary as explained below and start the application.
 
 ### Build API from source
 When you want to build the application from source, make sure to also checkout this repository `https://github.com/Solem8s/gosoline` on the branch `tls-client-api` next to this project.
-Afterwards you can just run the following script: `cmd/tls-client-api/build.sh SOME_BUILD_IDENTIFIER` and it should build the binaries for you
+Afterwards you can just run the following script: `cmd/tls-client-api/build.sh SOME_BUILD_IDENTIFIER` and it should build the binaries for you.
 
 ### Configuration & Start
-* Configure stuff like api port and authentication keys in the `cmd/tls-client-api/config.dist.yml` file.
-* You can also configure if the api should automatically follow redirects (3XX Status Codes) or not. Per Default the API does not follow redirects.
-* The endpoint is `http://127.0.0.1:8080/api/forward`
+* Configure things like api port and authentication keys in the `cmd/tls-client-api/config.dist.yml` file.
+* The default endpoint is `http://127.0.0.1:8080/api/forward`
 * You need to set a `x-api-key` header with an auth key from the config file. This is for protecting the API when you host it on some server. Requests without the correct keys in the header will be rejected.
 
 ### Attention
@@ -47,29 +49,42 @@ Afterwards you can just run the following script: `cmd/tls-client-api/build.sh S
 **Do not make this endpoints public available when you host the Application on some server in the internet. You would make your config file public available.**
 
 ### How to use this api when it is running
-You need to do a POST Request against this running API Service with the following JSON Request Body:
+You need to do a POST Request against this running API with parts of the following JSON Request Body (keep in mind this is the full body - not the minimum required):
 ```json
 {
   "sessionId": "reusableSessionId",
-  "tlsClientIdentifier": "chrome_103",
+  "tlsClientIdentifier": "chrome_105",
   "followRedirects": false,
   "insecureSkipVerify": false,
   "isByteResponse": false,
   "timeoutSeconds": 30,
   "customTlsClient": {
-    "ja3String": "771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,0-23-65281-10-11-35-16-5-13-18-51-45-43-27-17513,29-23-24,0",
+    "ja3String": "771,2570-4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,2570-0-23-65281-10-11-35-16-5-13-18-51-45-43-27-17513-2570-21,2570-29-23-24,0",
     "h2Settings": {
-      1: 65536,
-      3: 1000,
-      4: 6291456,
-      6: 262144
+      "HEADER_TABLE_SIZE": 65536,
+      "MAX_CONCURRENT_STREAMS": 1000,
+      "INITIAL_WINDOW_SIZE": 6291456,
+      "MAX_HEADER_LIST_SIZE": 262144
     },
     "h2SettingsOrder": [
-      1,
-      3,
-      4,
-      6
+      "HEADER_TABLE_SIZE",
+      "MAX_CONCURRENT_STREAMS",
+      "INITIAL_WINDOW_SIZE",
+      "MAX_HEADER_LIST_SIZE"
     ],
+    "supportedSignatureAlgorithms": [
+      "ECDSAWithP256AndSHA256",
+      "PSSWithSHA256",
+      "PKCS1WithSHA256",
+      "ECDSAWithP384AndSHA384",
+      "PSSWithSHA384",
+      "PKCS1WithSHA384",
+      "PSSWithSHA512",
+      "PKCS1WithSHA512",
+    ],
+    "supportedVersions": ["GREASE", "1.3", "1.2"],
+    "keyShareCurves": ["GREASE", "X25519"],
+    "certCompressionAlgo": "brotli",
     "pseudoHeaderOrder": [
       ":method",
       ":authority",
@@ -77,9 +92,7 @@ You need to do a POST Request against this running API Service with the followin
       ":path"
     ],
     "connectionFlow": 15663105,
-    "priorityFrames": [
-
-    ]
+    "priorityFrames": []
   },
   "proxyUrl": "",
   "headerOrder": [
@@ -104,37 +117,78 @@ You need to do a POST Request against this running API Service with the followin
   "requestMethod": "GET"
 }
 ```
-* If `tlsClientIdentifier` is not specified chrome_105 will be used.
+
+* If `tlsClientIdentifier` is not specified chrome_106 will be used.
 * You can use your own client by providing `customTlsClient` instead of `tlsClientIdentifier` 
-* `sessionId` is optional. When not provided the API creates a new Session. On every forwarded request you will receive the sessionId in the response to be able to reuse sessions (cookies). 
+* `sessionId` is optional. When not provided the API does not create a Session. On every forwarded request with a given sessionId you will receive the sessionId in the response to be able to reuse sessions (cookies). 
 * Be aware that `insecureSkipVerify` and the `timeoutSeconds` can not be changed during a session. 
 * `followRedirects` and `proxyUrl` can be changed within a session.
 * If you do not want to set `requestBody` or `proxyUrl` use `null` instead of empty string
 * When you set `isByteResponse` to `true` the response body will be a base64 encoded string. Useful when you want to download images for example.
 * Header order might be random when no order is specified
 
-#### h2 seetings IDs
+#### Possible Custom client Settings
 ```go
-	SettingHeaderTableSize      0x1
-	SettingEnablePush           0x2
-	SettingMaxConcurrentStreams 0x3
-	SettingInitialWindowSize    0x4
-	SettingMaxFrameSize         0x5
-	SettingMaxHeaderListSize    0x6
+var H2SettingsMap = map[string]http2.SettingID{
+    "HEADER_TABLE_SIZE":      http2.SettingHeaderTableSize,
+    "ENABLE_PUSH":            http2.SettingEnablePush,
+    "MAX_CONCURRENT_STREAMS": http2.SettingMaxConcurrentStreams,
+    "INITIAL_WINDOW_SIZE":    http2.SettingInitialWindowSize,
+    "MAX_FRAME_SIZE":         http2.SettingMaxFrameSize,
+    "MAX_HEADER_LIST_SIZE":   http2.SettingMaxHeaderListSize,
+}
+
+var tlsVersions = map[string]uint16{
+    "GREASE": tls.GREASE_PLACEHOLDER,
+    "1.3":    tls.VersionTLS13,
+    "1.2":    tls.VersionTLS12,
+    "1.1":    tls.VersionTLS11,
+    "1.0":    tls.VersionTLS10,
+}
+
+var signatureAlgorithms = map[string]tls.SignatureScheme{
+    "PKCS1WithSHA256":        tls.PKCS1WithSHA256,
+    "PKCS1WithSHA384":        tls.PKCS1WithSHA384,
+    "PKCS1WithSHA512":        tls.PKCS1WithSHA512,
+    "PSSWithSHA256":          tls.PSSWithSHA256,
+    "PSSWithSHA384":          tls.PSSWithSHA384,
+    "PSSWithSHA512":          tls.PSSWithSHA512,
+    "ECDSAWithP256AndSHA256": tls.ECDSAWithP256AndSHA256,
+    "ECDSAWithP384AndSHA384": tls.ECDSAWithP384AndSHA384,
+    "ECDSAWithP521AndSHA512": tls.ECDSAWithP521AndSHA512,
+    "PKCS1WithSHA1":          tls.PKCS1WithSHA1,
+    "ECDSAWithSHA1":          tls.ECDSAWithSHA1,
+}
+
+var curves = map[string]tls.CurveID{
+    "GREASE": tls.CurveID(tls.GREASE_PLACEHOLDER),
+    "P256":   tls.CurveP256,
+    "P384":   tls.CurveP384,
+    "P521":   tls.CurveP521,
+    "X25519": tls.X25519,
+}
+
+var certCompression = map[string]tls.CertCompressionAlgo{
+    "zlib":   tls.CertCompressionZlib,
+    "brotli": tls.CertCompressionBrotli,
+    "zstd":   tls.CertCompressionZstd,
+}
 ```
 
 #### Response
 The Response from the API looks like that:
 ```json
 {
-  "sessionId": "some reusable sessionId",
+  "sessionId": "some reusable sessionId if provided on the request",
   "status": 200,
+  "target": "the target url",
   "body": "The Response as string here or the error message",
   "headers": {},
   "cookies": {}
 }
 ```
 * In case of an error the status code will be 0
+
 
 #### JavaScript Fetch minified example
 ```js
@@ -182,6 +236,7 @@ response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
 ```
+
 #### CURL minified example
 ```curl
 curl --location --request POST '127.0.0.1:8080/api/forward' \
