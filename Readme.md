@@ -18,6 +18,7 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 - firefox_102
 - firefox_104
 - firefox_105
+- firefox_106
 - opera_89
 - opera_90
 - opera_91
