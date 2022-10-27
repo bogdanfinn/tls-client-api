@@ -23,6 +23,7 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 - opera_90
 - opera_91
 - zalando_android_mobile
+- zalando_ios_mobile
 - nike_ios_mobile
 - nike_android_mobile
 
