@@ -5,6 +5,7 @@
 This is an application which is using [gosoline](https://github.com/justtrackio/gosoline) and [TLS-Client](https://github.com/bogdanfinn/tls-client) to run a simple request forwarding service with the option to use specific tls fingerprints which are implemented in [TLS-client](https://github.com/bogdanfinn/tls-client).
 
 ### Supported Clients
+- chrome_107
 - chrome_106
 - chrome_105
 - chrome_104
@@ -120,7 +121,7 @@ You need to do a POST Request against this running API with parts of the followi
 }
 ```
 
-* If `tlsClientIdentifier` is not specified chrome_106 will be used.
+* If `tlsClientIdentifier` is not specified chrome_107 will be used.
 * You can use your own client by providing `customTlsClient` instead of `tlsClientIdentifier` 
 * `sessionId` is optional. When not provided the API does not create a Session. On every forwarded request with a given sessionId you will receive the sessionId in the response to be able to reuse sessions (cookies). 
 * Be aware that `insecureSkipVerify` and the `timeoutSeconds` can not be changed during a session. 
