@@ -194,6 +194,7 @@ The Response from the API looks like that:
 
 
 #### JavaScript Fetch minified example
+##### Forward Request `/api/forward`
 ```js
 var myHeaders = new Headers();
 myHeaders.append("x-api-key", "my-auth-key-1");
@@ -218,7 +219,48 @@ fetch("127.0.0.1:8080/api/forward", requestOptions)
   .catch(error => console.log('error', error));
 ```
 
+##### Free Single Session `/api/free-session`
+```js
+var myHeaders = new Headers();
+myHeaders.append("x-api-key", "my-auth-key-1");
+myHeaders.append("Content-Type", "application/json");
+
+var raw = JSON.stringify({
+  "sessionId": "my-custom-sessionId"
+});
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("127.0.0.1:8080/api/free-session", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+```
+
+##### Free All Sessions `/api/free-all`
+```js
+var myHeaders = new Headers();
+myHeaders.append("x-api-key", "my-auth-key-1");
+
+var requestOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  redirect: 'follow'
+};
+
+fetch("127.0.0.1:8080/api/free-all", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+```
+
 #### Python Requests minified example
+##### Forward Request `/api/forward`
 ```python
 import requests
 import json
@@ -240,7 +282,44 @@ response = requests.request("POST", url, headers=headers, data=payload)
 print(response.text)
 ```
 
+##### Free Single Session `/api/free-session`
+```python
+import requests
+import json
+
+url = "127.0.0.1:8080/api/free-session"
+
+payload = json.dumps({
+  "sessionId": "my-custom-sessionId"
+})
+headers = {
+  'x-api-key': 'my-auth-key-1',
+  'Content-Type': 'application/json'
+}
+
+response = requests.request("POST", url, headers=headers, data=payload)
+
+print(response.text)
+```
+
+##### Free All Sessions `/api/free-all`
+```python
+import requests
+
+url = "127.0.0.1:8080/api/free-all"
+
+payload={}
+headers = {
+  'x-api-key': 'my-auth-key-1',
+}
+
+response = requests.request("GET", url, headers=headers, data=payload)
+
+print(response.text)
+```
+
 #### CURL minified example
+##### Forward Request `/api/forward`
 ```curl
 curl --location --request POST '127.0.0.1:8080/api/forward' \
 --header 'x-api-key: my-auth-key-1' \
@@ -250,6 +329,22 @@ curl --location --request POST '127.0.0.1:8080/api/forward' \
     "requestUrl": "https://tls.peet.ws/api/all",
     "requestMethod": "GET"
 }'
+```
+
+##### Free Single Session `/api/free-session`
+```curl
+curl --location --request POST '127.0.0.1:8080/api/free-session' \
+--header 'x-api-key: my-auth-key-1' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "sessionId":"my-custom-sessionid"
+}'
+```
+
+##### Free All Sessions `/api/free-all`
+```curl
+curl --location --request GET '127.0.0.1:8080/api/free-all' \
+--header 'x-api-key: my-auth-key-1'
 ```
 
 ### Frequently Asked Questions / Errors

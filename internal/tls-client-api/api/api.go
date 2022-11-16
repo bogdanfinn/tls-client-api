@@ -28,5 +28,19 @@ func DefineRouter(ctx context.Context, config cfg.Config, logger log.Logger) (*a
 
 	d.POST("api/forward", forwardedRequestHandler)
 
+	freeAllRequestHandler, err := NewFreeAllHandler(ctx, config, logger)
+	if err != nil {
+		return nil, fmt.Errorf("can not create freeAllRequestHandler: %w", err)
+	}
+
+	d.GET("api/free-all", freeAllRequestHandler)
+
+	freeSessionRequestHandler, err := NewFreeSessionHandler(ctx, config, logger)
+	if err != nil {
+		return nil, fmt.Errorf("can not create freeSessionRequestHandler: %w", err)
+	}
+
+	d.POST("api/free-session", freeSessionRequestHandler)
+
 	return d, nil
 }

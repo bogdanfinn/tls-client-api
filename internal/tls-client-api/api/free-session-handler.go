@@ -1,0 +1,49 @@
+package api
+
+import (
+	"context"
+	"fmt"
+
+	tls_client_cffi_src "github.com/bogdanfinn/tls-client/cffi_src"
+	"github.com/gin-gonic/gin"
+	"github.com/justtrackio/gosoline/pkg/apiserver"
+	"github.com/justtrackio/gosoline/pkg/cfg"
+	"github.com/justtrackio/gosoline/pkg/log"
+)
+
+type FreeSessionHandler struct {
+	logger log.Logger
+}
+
+func NewFreeSessionHandler(ctx context.Context, config cfg.Config, logger log.Logger) (gin.HandlerFunc, error) {
+	handler := FreeSessionHandler{
+		logger: logger,
+	}
+
+	return apiserver.CreateJsonHandler(handler), nil
+}
+
+func (fh FreeSessionHandler) GetInput() interface{} {
+	return &tls_client_cffi_src.FreeSessionInput{}
+}
+
+func (fh FreeSessionHandler) Handle(ctx context.Context, request *apiserver.Request) (*apiserver.Response, error) {
+	input, ok := request.Body.(*tls_client_cffi_src.FreeSessionInput)
+
+	if !ok {
+		err := tls_client_cffi_src.NewTLSClientError(fmt.Errorf("bad request body provided"))
+		return handleErrorResponse(fh.logger, "", false, err)
+	}
+	err := tls_client_cffi_src.DestroyTlsClientSession(input.SessionId)
+
+	if err != nil {
+		clientErr := tls_client_cffi_src.NewTLSClientError(err)
+		return handleErrorResponse(fh.logger, input.SessionId, true, clientErr)
+	}
+
+	out := tls_client_cffi_src.FreeOutput{
+		Success: true,
+	}
+
+	return apiserver.NewJsonResponse(out), nil
+}

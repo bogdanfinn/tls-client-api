@@ -32,20 +32,20 @@ func (fh ForwardedRequestHandler) Handle(ctx context.Context, request *apiserver
 
 	if !ok {
 		err := tls_client_cffi_src.NewTLSClientError(fmt.Errorf("bad request body provided"))
-		return fh.handleErrorResponse("", false, err)
+		return handleErrorResponse(fh.logger, "", false, err)
 	}
 
 	tlsClient, sessionId, withSession, err := tls_client_cffi_src.GetTlsClientFromInput(*input)
 
 	if err != nil {
-		return fh.handleErrorResponse(sessionId, withSession, err)
+		return handleErrorResponse(fh.logger, sessionId, withSession, err)
 	}
 
 	req, err := tls_client_cffi_src.BuildRequest(*input)
 
 	if err != nil {
 		clientErr := tls_client_cffi_src.NewTLSClientError(err)
-		return fh.handleErrorResponse(sessionId, withSession, clientErr)
+		return handleErrorResponse(fh.logger, sessionId, withSession, clientErr)
 	}
 
 	cookies := buildCookies(input.RequestCookies)
@@ -58,7 +58,7 @@ func (fh ForwardedRequestHandler) Handle(ctx context.Context, request *apiserver
 
 	if reqErr != nil {
 		clientErr := tls_client_cffi_src.NewTLSClientError(fmt.Errorf("failed to do request: %w", reqErr))
-		return fh.handleErrorResponse(sessionId, withSession, clientErr)
+		return handleErrorResponse(fh.logger, sessionId, withSession, clientErr)
 	}
 
 	sessionCookies := tlsClient.GetCookies(req.URL)
@@ -66,25 +66,8 @@ func (fh ForwardedRequestHandler) Handle(ctx context.Context, request *apiserver
 	response, err := tls_client_cffi_src.BuildResponse(sessionId, withSession, resp, sessionCookies, input.IsByteResponse)
 
 	if err != nil {
-		return fh.handleErrorResponse(sessionId, withSession, err)
+		return handleErrorResponse(fh.logger, sessionId, withSession, err)
 	}
 
 	return apiserver.NewJsonResponse(response), nil
-}
-
-func (fh ForwardedRequestHandler) handleErrorResponse(sessionId string, withSession bool, err *tls_client_cffi_src.TLSClientError) (*apiserver.Response, error) {
-	fh.logger.Error("error during api request forwarding: %w", err)
-
-	resp := tls_client_cffi_src.Response{
-		Status:  0,
-		Body:    err.Error(),
-		Headers: nil,
-		Cookies: nil,
-	}
-
-	if withSession {
-		resp.SessionId = sessionId
-	}
-
-	return apiserver.NewJsonResponse(resp), nil
 }
