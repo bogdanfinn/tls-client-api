@@ -30,6 +30,9 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 
 See: https://github.com/bogdanfinn/tls-client#supported-and-tested-clients
 
+All Clients support Random TLS Extension Order by setting the option on the Http Client itself `"withRandomTLSExtensionOrder": true`.
+This is needed for Chrome 107+
+
 #### Need other clients?
 
 Please open an issue on [this](https://github.com/bogdanfinn/tls-client) github repository. In the best case you provide the response of https://tls.peet.ws/api/all requested by the client you want to be implemented.
@@ -59,6 +62,7 @@ You need to do a POST Request against this running API with parts of the followi
   "tlsClientIdentifier": "chrome_105",
   "followRedirects": false,
   "insecureSkipVerify": false,
+  "withRandomTLSExtensionOrder": false,
   "isByteResponse": false,
   "timeoutSeconds": 30,
   "customTlsClient": {

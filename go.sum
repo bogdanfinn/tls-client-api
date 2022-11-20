@@ -228,12 +228,12 @@ github.com/bkaradzic/go-lz4 v1.0.0/go.mod h1:0YdlkowM3VswSROI7qDxhRvJ3sLhlFrRRwj
 github.com/blang/semver v3.1.0+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnwebNt5EWlYSAyrTnjyyk=
 github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnwebNt5EWlYSAyrTnjyyk=
 github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869/go.mod h1:Ekp36dRnpXw/yCqJaO+ZrUyxD+3VXMFFr56k5XYrpB4=
-github.com/bogdanfinn/fhttp v0.5.8 h1:zPZkWlIqaffnUm0HEXpnXfrZuDL3qf7Z/mY/SVGL/FI=
-github.com/bogdanfinn/fhttp v0.5.8/go.mod h1:ooy0Px9CE2LANqzMfYXsw20mCGsuMjMHpQbBGSX9lcQ=
-github.com/bogdanfinn/tls-client v0.8.4 h1:h7KPNu2vhuUAWfpmFrdUiLys5psj9+ltaVVHPQyTKEo=
-github.com/bogdanfinn/tls-client v0.8.4/go.mod h1:vl2ZQaK7RTkrwH4/qGiiFGz1zoyyxYifzxBPnWE5kq0=
-github.com/bogdanfinn/utls v1.5.8 h1:7hsbCdOmbdaoKhHRy/33a4MGbod+fZD+y41u+jEliMk=
-github.com/bogdanfinn/utls v1.5.8/go.mod h1:1UTl702vnhYVtMCI1KIzoju8P4/dHnrCHRSzvBiRDMA=
+github.com/bogdanfinn/fhttp v0.5.9 h1:J2VXWQP09ljqAk8Z0z0CMRelgOmYwcThOcLMzF5FbHU=
+github.com/bogdanfinn/fhttp v0.5.9/go.mod h1:sG3i2OwhEgSMgmQ6CBZcvGpf47WyP7WRaoiQQB7Qx7U=
+github.com/bogdanfinn/tls-client v0.9.0 h1:6qFuNrUr/7Um6v8UPuUh/G1WUos9mLpG+2SyyiCbo4c=
+github.com/bogdanfinn/tls-client v0.9.0/go.mod h1:z4cUTyla6OXYaiGAtT49xFSAgznd9Yhb+nhwh1MNX/g=
+github.com/bogdanfinn/utls v1.5.9 h1:pRyzdVdVieYg5HuVWDMn7K/moSjh14TbCXCntMvGcYI=
+github.com/bogdanfinn/utls v1.5.9/go.mod h1:mHeRCi69cUiEyVBkKONB1cAbLjRcZnlJbGzttmiuK4o=
 github.com/boombuler/barcode v1.0.0/go.mod h1:paBWMcWSl3LHKBqUq+rly7CNSldXjb2rDl3JlRe0mD8=
 github.com/bshuster-repo/logrus-logstash-hook v0.4.1/go.mod h1:zsTqEiSzDgAa/8GZR7E1qaXrhYNDKBYy5/dWPTIflbk=
 github.com/buger/jsonparser v0.0.0-20180808090653-f4dd9f5a6b44/go.mod h1:bbYlZJ7hK1yFx9hf58LP0zeX7UjIGs20ufpu3evjr+s=
@@ -1033,7 +1033,6 @@ github.com/prometheus/procfs v0.6.0/go.mod h1:cz+aTbrPOrUb4q7XlbU9ygM+/jj0fzG6c1
 github.com/prometheus/procfs v0.7.3 h1:4jVXhlkAyzOScmCkXBTOLRLTz8EeU+eyjrwB/EPq0VU=
 github.com/prometheus/procfs v0.7.3/go.mod h1:cz+aTbrPOrUb4q7XlbU9ygM+/jj0fzG6c1xBZuNvfVA=
 github.com/prometheus/tsdb v0.7.1/go.mod h1:qhTCs0VvXwvX/y3TZrWD7rabWM+ijKTux40TwIPHuXU=
-github.com/refraction-networking/utls v1.1.5 h1:JtrojoNhbUQkBqEg05sP3gDgDj6hIEAAVKbI9lx4n6w=
 github.com/remyoudompheng/bigfft v0.0.0-20190728182440-6a916e37a237/go.mod h1:qqbHyh8v60DhA7CoWK5oRCqLrMHRGoxYCSS9EjAz6Eo=
 github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0/go.mod h1:qqbHyh8v60DhA7CoWK5oRCqLrMHRGoxYCSS9EjAz6Eo=
 github.com/rogpeppe/fastuuid v0.0.0-20150106093220-6724a57986af/go.mod h1:XWv6SoW27p1b0cqNHllgS5HIMJraePCO15w5zCzIWYg=
