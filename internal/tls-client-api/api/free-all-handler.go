@@ -5,6 +5,7 @@ import (
 
 	tls_client_cffi_src "github.com/bogdanfinn/tls-client/cffi_src"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/justtrackio/gosoline/pkg/apiserver"
 	"github.com/justtrackio/gosoline/pkg/cfg"
 	"github.com/justtrackio/gosoline/pkg/log"
@@ -30,7 +31,8 @@ func (fh FreeAllHandler) Handle(ctx context.Context, request *apiserver.Request)
 		return handleErrorResponse(fh.logger, "", false, clientErr)
 	}
 
-	out := tls_client_cffi_src.FreeOutput{
+	out := tls_client_cffi_src.DestroyOutput{
+		Id:      uuid.New().String(),
 		Success: true,
 	}
 

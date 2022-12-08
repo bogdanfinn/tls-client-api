@@ -5,6 +5,7 @@
 This is an application which is using [gosoline](https://github.com/justtrackio/gosoline) and [TLS-Client](https://github.com/bogdanfinn/tls-client) to run a simple request forwarding service with the option to use specific tls fingerprints which are implemented in [TLS-client](https://github.com/bogdanfinn/tls-client).
 
 ### Supported Clients
+- chrome_108
 - chrome_107
 - chrome_106
 - chrome_105
@@ -27,6 +28,7 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 - zalando_ios_mobile
 - nike_ios_mobile
 - nike_android_mobile
+- cloudscraper
 
 See: https://github.com/bogdanfinn/tls-client#supported-and-tested-clients
 
@@ -63,6 +65,9 @@ You need to do a POST Request against this running API with parts of the followi
   "followRedirects": false,
   "insecureSkipVerify": false,
   "withRandomTLSExtensionOrder": false,
+  "isByteRequest": false,
+  "withDebug": false,
+  "forceHttp1": false,
   "isByteResponse": false,
   "timeoutSeconds": 30,
   "customTlsClient": {
@@ -87,7 +92,7 @@ You need to do a POST Request against this running API with parts of the followi
       "PSSWithSHA384",
       "PKCS1WithSHA384",
       "PSSWithSHA512",
-      "PKCS1WithSHA512",
+      "PKCS1WithSHA512"
     ],
     "supportedVersions": ["GREASE", "1.3", "1.2"],
     "keyShareCurves": ["GREASE", "X25519"],
@@ -125,13 +130,14 @@ You need to do a POST Request against this running API with parts of the followi
 }
 ```
 
-* If `tlsClientIdentifier` is not specified chrome_107 will be used.
+* If `tlsClientIdentifier` is not specified chrome_108 will be used.
 * You can use your own client by providing `customTlsClient` instead of `tlsClientIdentifier` 
 * `sessionId` is optional. When not provided the API does not create a Session. On every forwarded request with a given sessionId you will receive the sessionId in the response to be able to reuse sessions (cookies). 
 * Be aware that `insecureSkipVerify` and the `timeoutSeconds` can not be changed during a session. 
 * `followRedirects` and `proxyUrl` can be changed within a session.
 * If you do not want to set `requestBody` or `proxyUrl` use `null` instead of empty string
 * When you set `isByteResponse` to `true` the response body will be a base64 encoded string. Useful when you want to download images for example.
+* When you set `isByteRequest` to `true` the request body needs to be a base64 encoded string. Useful when you want to upload images for example.
 * Header order might be random when no order is specified
 
 #### Possible Custom client Settings
@@ -186,6 +192,7 @@ var certCompression = map[string]tls.CertCompressionAlgo{
 The Response from the API looks like that:
 ```json
 {
+  "id": "some response identifier",
   "sessionId": "some reusable sessionId if provided on the request",
   "status": 200,
   "target": "the target url",

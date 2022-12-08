@@ -6,6 +6,7 @@ import (
 
 	tls_client_cffi_src "github.com/bogdanfinn/tls-client/cffi_src"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/justtrackio/gosoline/pkg/apiserver"
 	"github.com/justtrackio/gosoline/pkg/cfg"
 	"github.com/justtrackio/gosoline/pkg/log"
@@ -24,11 +25,11 @@ func NewFreeSessionHandler(ctx context.Context, config cfg.Config, logger log.Lo
 }
 
 func (fh FreeSessionHandler) GetInput() interface{} {
-	return &tls_client_cffi_src.FreeSessionInput{}
+	return &tls_client_cffi_src.DestroySessionInput{}
 }
 
 func (fh FreeSessionHandler) Handle(ctx context.Context, request *apiserver.Request) (*apiserver.Response, error) {
-	input, ok := request.Body.(*tls_client_cffi_src.FreeSessionInput)
+	input, ok := request.Body.(*tls_client_cffi_src.DestroySessionInput)
 
 	if !ok {
 		err := tls_client_cffi_src.NewTLSClientError(fmt.Errorf("bad request body provided"))
@@ -41,7 +42,8 @@ func (fh FreeSessionHandler) Handle(ctx context.Context, request *apiserver.Requ
 		return handleErrorResponse(fh.logger, input.SessionId, true, clientErr)
 	}
 
-	out := tls_client_cffi_src.FreeOutput{
+	out := tls_client_cffi_src.DestroyOutput{
+		Id:      uuid.New().String(),
 		Success: true,
 	}
 

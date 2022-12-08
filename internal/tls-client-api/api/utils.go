@@ -3,6 +3,7 @@ package api
 import (
 	http "github.com/bogdanfinn/fhttp"
 	tls_client_cffi_src "github.com/bogdanfinn/tls-client/cffi_src"
+	"github.com/google/uuid"
 	"github.com/justtrackio/gosoline/pkg/apiserver"
 	"github.com/justtrackio/gosoline/pkg/log"
 )
@@ -11,6 +12,7 @@ func handleErrorResponse(logger log.Logger, sessionId string, withSession bool, 
 	logger.Error("error during api request handling: %w", err)
 
 	resp := tls_client_cffi_src.Response{
+		Id:      uuid.New().String(),
 		Status:  0,
 		Body:    err.Error(),
 		Headers: nil,

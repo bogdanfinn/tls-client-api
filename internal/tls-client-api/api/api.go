@@ -28,6 +28,13 @@ func DefineRouter(ctx context.Context, config cfg.Config, logger log.Logger) (*a
 
 	d.POST("api/forward", forwardedRequestHandler)
 
+	getCookiesHandler, err := NewGetCookiesHandler(ctx, config, logger)
+	if err != nil {
+		return nil, fmt.Errorf("can not create getCookiesHandler: %w", err)
+	}
+
+	d.POST("api/cookies", getCookiesHandler)
+
 	freeAllRequestHandler, err := NewFreeAllHandler(ctx, config, logger)
 	if err != nil {
 		return nil, fmt.Errorf("can not create freeAllRequestHandler: %w", err)
