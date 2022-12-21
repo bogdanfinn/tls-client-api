@@ -104,8 +104,19 @@ You need to do a POST Request against this running API with parts of the followi
       ":path"
     ],
     "connectionFlow": 15663105,
-    "priorityFrames": [],
-    "headerPriority": null,
+    "priorityFrames": [{
+      "streamID": 1,
+      "priorityParam": {
+        "streamDep": 1,
+        "exclusive": true,
+        "weight": 1
+      }
+    }],
+    "headerPriority": {
+      "streamDep": 1,
+      "exclusive": true,
+      "weight": 1
+    }
   },
   "proxyUrl": "",
   "headerOrder": [
