@@ -66,10 +66,13 @@ You need to do a POST Request against this running API with parts of the followi
   "insecureSkipVerify": false,
   "withRandomTLSExtensionOrder": false,
   "isByteRequest": false,
+  "withoutCookieJar": false,
+  "withDefaultCookieJar": false,
   "withDebug": false,
   "forceHttp1": false,
   "isByteResponse": false,
   "timeoutSeconds": 30,
+  "timeoutMilliseconds": 0,
   "customTlsClient": {
     "ja3String": "771,2570-4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,2570-0-23-65281-10-11-35-16-5-13-18-51-45-43-27-17513-2570-21,2570-29-23-24,0",
     "h2Settings": {

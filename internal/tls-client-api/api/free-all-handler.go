@@ -24,12 +24,7 @@ func NewFreeAllHandler(ctx context.Context, config cfg.Config, logger log.Logger
 }
 
 func (fh FreeAllHandler) Handle(ctx context.Context, request *apiserver.Request) (*apiserver.Response, error) {
-	err := tls_client_cffi_src.DestroyTlsClientSessions()
-
-	if err != nil {
-		clientErr := tls_client_cffi_src.NewTLSClientError(err)
-		return handleErrorResponse(fh.logger, "", false, clientErr)
-	}
+	tls_client_cffi_src.ClearSessionCache()
 
 	out := tls_client_cffi_src.DestroyOutput{
 		Id:      uuid.New().String(),

@@ -35,12 +35,8 @@ func (fh FreeSessionHandler) Handle(ctx context.Context, request *apiserver.Requ
 		err := tls_client_cffi_src.NewTLSClientError(fmt.Errorf("bad request body provided"))
 		return handleErrorResponse(fh.logger, "", false, err)
 	}
-	err := tls_client_cffi_src.DestroyTlsClientSession(input.SessionId)
 
-	if err != nil {
-		clientErr := tls_client_cffi_src.NewTLSClientError(err)
-		return handleErrorResponse(fh.logger, input.SessionId, true, clientErr)
-	}
+	tls_client_cffi_src.RemoveSession(input.SessionId)
 
 	out := tls_client_cffi_src.DestroyOutput{
 		Id:      uuid.New().String(),

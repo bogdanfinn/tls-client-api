@@ -38,7 +38,7 @@ func (fh GetCookiesHandler) Handle(ctx context.Context, request *apiserver.Reque
 		return handleErrorResponse(fh.logger, "", false, err)
 	}
 
-	tlsClient, err := tls_client_cffi_src.GetTlsClientFromSession(input.SessionId)
+	tlsClient, err := tls_client_cffi_src.GetClient(input.SessionId)
 
 	if err != nil {
 		clientErr := tls_client_cffi_src.NewTLSClientError(err)

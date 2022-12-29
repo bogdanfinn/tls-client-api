@@ -35,7 +35,7 @@ func (fh ForwardedRequestHandler) Handle(ctx context.Context, request *apiserver
 		return handleErrorResponse(fh.logger, "", false, err)
 	}
 
-	tlsClient, sessionId, withSession, err := tls_client_cffi_src.GetTlsClientFromInput(*input)
+	tlsClient, sessionId, withSession, err := tls_client_cffi_src.CreateClient(*input)
 
 	if err != nil {
 		return handleErrorResponse(fh.logger, sessionId, withSession, err)
