@@ -3,8 +3,8 @@ module github.com/bogdanfinn/tls-client-api
 go 1.18
 
 require (
-	github.com/bogdanfinn/fhttp v0.5.15
-	github.com/bogdanfinn/tls-client v1.3.2
+	github.com/bogdanfinn/fhttp v0.5.16
+	github.com/bogdanfinn/tls-client v1.3.3
 	github.com/gin-gonic/gin v1.8.1
 	github.com/google/uuid v1.3.0
 	github.com/justtrackio/gosoline v0.3.99

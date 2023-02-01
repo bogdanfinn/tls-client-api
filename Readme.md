@@ -31,6 +31,8 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 - nike_ios_mobile
 - nike_android_mobile
 - cloudscraper
+- mms_ios
+- mesh_ios
 
 See: https://github.com/bogdanfinn/tls-client#supported-and-tested-clients
 
@@ -69,6 +71,8 @@ You need to do a POST Request against this running API with parts of the followi
   "withRandomTLSExtensionOrder": false,
   "isByteRequest": false,
   "withoutCookieJar": false,
+  "catchPanics": false,
+  "additionalDecode": null,
   "withDefaultCookieJar": false,
   "withDebug": false,
   "forceHttp1": false,
