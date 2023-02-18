@@ -5,6 +5,7 @@
 This is an application which is using [gosoline](https://github.com/justtrackio/gosoline) and [TLS-Client](https://github.com/bogdanfinn/tls-client) to run a simple request forwarding service with the option to use specific tls fingerprints which are implemented in [TLS-client](https://github.com/bogdanfinn/tls-client).
 
 ### Supported Clients
+- chrome_110
 - chrome_109
 - chrome_108
 - chrome_107
@@ -23,6 +24,7 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 - firefox_105
 - firefox_106
 - firefox_108
+- firefox_110
 - opera_89
 - opera_90
 - opera_91
