@@ -34,7 +34,10 @@ This is an application which is using [gosoline](https://github.com/justtrackio/
 - nike_android_mobile
 - cloudscraper
 - mms_ios
-- mesh_ios
+- mesh_ios_1
+- mesh_ios_2
+- mesh_android_1
+- mesh_android_2
 
 See: https://github.com/bogdanfinn/tls-client#supported-and-tested-clients
 
