@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/bogdanfinn/fhttp v0.5.19
-	github.com/bogdanfinn/tls-client v1.3.7
+	github.com/bogdanfinn/tls-client v1.3.8
 	github.com/gin-gonic/gin v1.8.1
 	github.com/google/uuid v1.3.0
 	github.com/justtrackio/gosoline v0.3.99
