@@ -55,7 +55,7 @@ func (fh GetCookiesHandler) Handle(ctx context.Context, request *apiserver.Reque
 
 	out := tls_client_cffi_src.CookiesFromSessionOutput{
 		Id:      uuid.New().String(),
-		Cookies: cookies,
+		Cookies: transformCookies(cookies),
 	}
 
 	jsonResponse, marshallError := json.Marshal(out)

@@ -26,7 +26,7 @@ func handleErrorResponse(logger log.Logger, sessionId string, withSession bool, 
 	return apiserver.NewJsonResponse(resp), nil
 }
 
-func buildCookies(cookies []tls_client_cffi_src.CookieInput) []*http.Cookie {
+func buildCookies(cookies []tls_client_cffi_src.Cookie) []*http.Cookie {
 	var ret []*http.Cookie
 
 	for _, cookie := range cookies {
@@ -36,6 +36,24 @@ func buildCookies(cookies []tls_client_cffi_src.CookieInput) []*http.Cookie {
 			Path:    cookie.Path,
 			Domain:  cookie.Domain,
 			Expires: cookie.Expires.Time,
+		})
+	}
+
+	return ret
+}
+
+func transformCookies(cookies []*http.Cookie) []tls_client_cffi_src.Cookie {
+	var ret []tls_client_cffi_src.Cookie
+
+	for _, cookie := range cookies {
+		ret = append(ret, tls_client_cffi_src.Cookie{
+			Name:   cookie.Name,
+			Value:  cookie.Value,
+			Path:   cookie.Path,
+			Domain: cookie.Domain,
+			Expires: tls_client_cffi_src.Timestamp{
+				Time: cookie.Expires,
+			},
 		})
 	}
 
