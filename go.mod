@@ -3,8 +3,8 @@ module github.com/bogdanfinn/tls-client-api
 go 1.20
 
 require (
-	github.com/bogdanfinn/fhttp v0.5.23
-	github.com/bogdanfinn/tls-client v1.5.0
+	github.com/bogdanfinn/fhttp v0.5.24
+	github.com/bogdanfinn/tls-client v1.6.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/google/uuid v1.3.0
 	github.com/justtrackio/gosoline v0.3.99
@@ -61,6 +61,7 @@ require (
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator/v10 v10.10.1 // indirect
+	github.com/go-redis/redis/v8 v8.11.5 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/goccy/go-json v0.9.7 // indirect
 	github.com/golang-migrate/migrate/v4 v4.15.1 // indirect
@@ -103,7 +104,6 @@ require (
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.32.1 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
-	github.com/redis/go-redis/v9 v9.0.5 // indirect
 	github.com/sha1sum/aws_signing_client v0.0.0-20170514202702-9088e4c7b34b // indirect
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/stretchr/objx v0.4.0 // indirect
