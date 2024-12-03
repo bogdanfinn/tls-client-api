@@ -31,12 +31,14 @@ func buildCookies(cookies []tls_client_cffi_src.Cookie) []*http.Cookie {
 
 	for _, cookie := range cookies {
 		ret = append(ret, &http.Cookie{
-			Name:    cookie.Name,
-			Value:   cookie.Value,
-			Path:    cookie.Path,
-			Domain:  cookie.Domain,
-			MaxAge:  cookie.MaxAge,
-			Expires: cookie.Expires.Time,
+			Name:     cookie.Name,
+			Value:    cookie.Value,
+			Path:     cookie.Path,
+			Domain:   cookie.Domain,
+			MaxAge:   cookie.MaxAge,
+			Expires:  cookie.Expires.Time,
+			Secure:   cookie.Secure,
+			HttpOnly: cookie.HttpOnly,
 		})
 	}
 
@@ -48,11 +50,13 @@ func transformCookies(cookies []*http.Cookie) []tls_client_cffi_src.Cookie {
 
 	for _, cookie := range cookies {
 		ret = append(ret, tls_client_cffi_src.Cookie{
-			Name:   cookie.Name,
-			Value:  cookie.Value,
-			Path:   cookie.Path,
-			Domain: cookie.Domain,
-			MaxAge: cookie.MaxAge,
+			Name:     cookie.Name,
+			Value:    cookie.Value,
+			Path:     cookie.Path,
+			Domain:   cookie.Domain,
+			MaxAge:   cookie.MaxAge,
+			Secure:   cookie.Secure,
+			HttpOnly: cookie.HttpOnly,
 			Expires: tls_client_cffi_src.Timestamp{
 				Time: cookie.Expires,
 			},
