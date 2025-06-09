@@ -1,15 +1,12 @@
 FROM golang:1.24.4-bookworm AS base
 
-RUN apt-get update && apt-get install -y git
-
-FROM base AS deps
-
 WORKDIR /app
 
 COPY go.mod go.sum .
-RUN go mod download && go mod verify
+RUN go mod download
+RUN go mod verify
 
-FROM deps AS builder
+FROM base AS builder
 
 COPY ./cmd/tls-client-api/main.go ./cmd/tls-client-api/main.go
 COPY ./internal ./internal
