@@ -135,8 +135,12 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-// replacement is needed to build the application for windows
-replace github.com/justtrackio/gosoline => ../gosoline
+//
+// https://github.com/Solem8s/gosoline/tree/tls-client-api
+// This replacement is needed to build the application for windows
+// This fork is 3 years old, we should update it to the latest version
+//
+replace github.com/justtrackio/gosoline => github.com/Solem8s/gosoline v0.3.88-0.20220703211153-4cf4b1d41fb2
 
 // replace github.com/bogdanfinn/fhttp => ../fhttp
 
