@@ -3,8 +3,8 @@ module github.com/bogdanfinn/tls-client-api
 go 1.24.1
 
 require (
-	github.com/bogdanfinn/fhttp v0.6.0
-	github.com/bogdanfinn/tls-client v1.11.0
+	github.com/bogdanfinn/fhttp v0.6.2
+	github.com/bogdanfinn/tls-client v1.11.2
 	github.com/gin-gonic/gin v1.8.1
 	github.com/google/uuid v1.6.0
 	github.com/justtrackio/gosoline v0.3.99
@@ -13,7 +13,6 @@ require (
 require (
 	cloud.google.com/go/compute v1.20.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
-	github.com/Dharmey747/quic-go-utls v1.0.3-utls // indirect
 	github.com/Masterminds/squirrel v1.5.2 // indirect
 	github.com/VividCortex/mysqlerr v0.0.0-20170204212430-6c6b55f8796f // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
@@ -46,7 +45,8 @@ require (
 	github.com/aws/aws-xray-sdk-go v1.7.0 // indirect
 	github.com/aws/smithy-go v1.11.2 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bogdanfinn/utls v1.7.3-barnius // indirect
+	github.com/bogdanfinn/quic-go-utls v1.0.4-utls // indirect
+	github.com/bogdanfinn/utls v1.7.4-barnius // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
