@@ -13,24 +13,24 @@ import (
 	"github.com/justtrackio/gosoline/pkg/log"
 )
 
-type GetCookiesHandler struct {
+type AddCookiesHandler struct {
 	logger log.Logger
 }
 
-func NewGetCookiesHandler(ctx context.Context, config cfg.Config, logger log.Logger) (gin.HandlerFunc, error) {
-	handler := GetCookiesHandler{
+func NewAddCookiesHandler(ctx context.Context, config cfg.Config, logger log.Logger) (gin.HandlerFunc, error) {
+	handler := AddCookiesHandler{
 		logger: logger,
 	}
 
 	return apiserver.CreateJsonHandler(handler), nil
 }
 
-func (fh GetCookiesHandler) GetInput() interface{} {
-	return &tls_client_cffi_src.GetCookiesFromSessionInput{}
+func (fh AddCookiesHandler) GetInput() interface{} {
+	return &tls_client_cffi_src.AddCookiesToSessionInput{}
 }
 
-func (fh GetCookiesHandler) Handle(ctx context.Context, request *apiserver.Request) (*apiserver.Response, error) {
-	input, ok := request.Body.(*tls_client_cffi_src.GetCookiesFromSessionInput)
+func (fh AddCookiesHandler) Handle(ctx context.Context, request *apiserver.Request) (*apiserver.Response, error) {
+	input, ok := request.Body.(*tls_client_cffi_src.AddCookiesToSessionInput)
 
 	if !ok {
 		err := tls_client_cffi_src.NewTLSClientError(fmt.Errorf("bad request body provided"))
@@ -50,23 +50,16 @@ func (fh GetCookiesHandler) Handle(ctx context.Context, request *apiserver.Reque
 		return handleErrorResponse(fh.logger, input.SessionId, true, clientErr)
 	}
 
-	cookies := tlsClient.GetCookies(u)
+	cookies := buildCookies(input.Cookies)
+
+	if len(cookies) > 0 {
+		tlsClient.SetCookies(u, cookies)
+	}
 
 	out := tls_client_cffi_src.CookiesFromSessionOutput{
 		Id:      uuid.New().String(),
 		Cookies: transformCookies(cookies),
 	}
-
-	/*
-		- Why was this here? Broke api response structure
-
-		jsonResponse, marshallError := json.Marshal(out)
-
-		if marshallError != nil {
-			clientErr := tls_client_cffi_src.NewTLSClientError(marshallError)
-			return handleErrorResponse(fh.logger, input.SessionId, true, clientErr)
-		}
-	*/
 
 	return apiserver.NewJsonResponse(out), nil
 }
