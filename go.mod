@@ -3,8 +3,8 @@ module github.com/bogdanfinn/tls-client-api
 go 1.24.1
 
 require (
-	github.com/bogdanfinn/fhttp v0.6.4
-	github.com/bogdanfinn/tls-client v1.12.0
+	github.com/bogdanfinn/fhttp v0.6.6
+	github.com/bogdanfinn/tls-client v1.13.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/google/uuid v1.6.0
 	github.com/justtrackio/gosoline v0.3.99
@@ -47,8 +47,8 @@ require (
 	github.com/bdandy/go-errors v1.2.2 // indirect
 	github.com/bdandy/go-socks4 v1.2.3 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bogdanfinn/quic-go-utls v1.0.5-utls // indirect
-	github.com/bogdanfinn/utls v1.7.5-barnius // indirect
+	github.com/bogdanfinn/quic-go-utls v1.0.7-utls // indirect
+	github.com/bogdanfinn/utls v1.7.7-barnius // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
