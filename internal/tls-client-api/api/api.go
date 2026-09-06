@@ -49,5 +49,12 @@ func DefineRouter(ctx context.Context, config cfg.Config, logger log.Logger) (*a
 
 	d.POST("api/free-session", freeSessionRequestHandler)
 
+	addCookiesHandler, err := NewAddCookiesHandler(ctx, config, logger)
+	if err != nil {
+		return nil, fmt.Errorf("can not create addCookiesHandler: %w", err)
+	}
+
+	d.POST("api/cookies/add", addCookiesHandler)
+
 	return d, nil
 }
