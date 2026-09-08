@@ -49,5 +49,12 @@ func DefineRouter(ctx context.Context, config cfg.Config, logger log.Logger) (*a
 
 	d.POST("api/free-session", freeSessionRequestHandler)
 
+	websocketBridgeHandler, err := NewWebsocketBridgeHandler(ctx, config, logger)
+	if err != nil {
+		return nil, fmt.Errorf("can not create websocketBridgeHandler: %w", err)
+	}
+
+	d.GET("api/ws", websocketBridgeHandler)
+
 	return d, nil
 }
