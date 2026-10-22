@@ -49,5 +49,40 @@ func DefineRouter(ctx context.Context, config cfg.Config, logger log.Logger) (*a
 
 	d.POST("api/free-session", freeSessionRequestHandler)
 
+	wsConnectHandler, err := NewWsConnectHandler(ctx, config, logger)
+	if err != nil {
+		return nil, fmt.Errorf("can not create wsConnectHandler: %w", err)
+	}
+
+	d.POST("api/ws/connect", wsConnectHandler)
+
+	wsReadHandler, err := NewWsReadHandler(ctx, config, logger)
+	if err != nil {
+		return nil, fmt.Errorf("can not create wsReadHandler: %w", err)
+	}
+
+	d.POST("api/ws/read", wsReadHandler)
+
+	wsWriteHandler, err := NewWsWriteHandler(ctx, config, logger)
+	if err != nil {
+		return nil, fmt.Errorf("can not create wsWriteHandler: %w", err)
+	}
+
+	d.POST("api/ws/write", wsWriteHandler)
+
+	wsCloseHandler, err := NewWsCloseHandler(ctx, config, logger)
+	if err != nil {
+		return nil, fmt.Errorf("can not create wsCloseHandler: %w", err)
+	}
+
+	d.POST("api/ws/close", wsCloseHandler)
+
+	wsStatsHandler, err := NewWsStatsHandler(ctx, config, logger)
+	if err != nil {
+		return nil, fmt.Errorf("can not create wsStatsHandler: %w", err)
+	}
+
+	d.POST("api/ws/stats", wsStatsHandler)
+
 	return d, nil
 }
