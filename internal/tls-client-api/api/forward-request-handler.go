@@ -41,6 +41,11 @@ func (fh ForwardedRequestHandler) Handle(ctx context.Context, request *apiserver
 		return handleErrorResponse(fh.logger, sessionId, withSession, err)
 	}
 
+	// A client without session is never used again, its HTTP/3 transports would keep their UDP sockets open forever.
+	if !withSession {
+		defer tlsClient.Close()
+	}
+
 	req, err := tls_client_cffi_src.BuildRequest(*input)
 
 	if err != nil {
