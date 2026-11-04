@@ -21,6 +21,13 @@ func DefineRouter(ctx context.Context, config cfg.Config, logger log.Logger) (*a
 
 	d.Use(authenticate)
 
+	getProfilesHandler, err := NewGetProfilesHandler(ctx, config, logger)
+	if err != nil {
+		return nil, fmt.Errorf("can not create getProfilesHandler: %w", err)
+	}
+
+	d.GET("api/profiles", getProfilesHandler)
+
 	forwardedRequestHandler, err := NewForwardedRequestHandler(ctx, config, logger)
 	if err != nil {
 		return nil, fmt.Errorf("can not create forwardedRequestHandler: %w", err)
